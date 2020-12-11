@@ -5,6 +5,7 @@
 
 ## 依存ライブラリ
 PokemonPRNG (LCGの基本的な処理を提供するライブラリです)
+
 PokemonStandardLibrary (性格やタイプなどの基礎情報, 各世代の種族情報などを提供するライブラリです, 作りかけ)
 
 ## Contact 
