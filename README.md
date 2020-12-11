@@ -1,8 +1,11 @@
-# SwShRNGLirary
+# PokemonCoRNGLibrary
 
 # 概要
-ポケモン剣盾のレイド乱数用のライブラリです。
-ポケモンクラス、各巣穴のデータ、および個体生成クラスが用意されています。
+ポケモンコロシアムの乱数調整汎用ライブラリです。
+
+## 依存ライブラリ
+PokemonPRNG (LCGの基本的な処理を提供するライブラリです)
+PokemonStandardLibrary (性格やタイプなどの基礎情報, 各世代の種族情報などを提供するライブラリです, 作りかけ)
 
 ## Contact 
 バグ等がありましたら、Twitter(@sub_827 )にでもよろしくお願いします。 
@@ -10,7 +13,3 @@
 
 ## Author
 [@sub_827](https://twitter.com/sub_827)
-
-Copyright (c) 2012 Simon Cropp and contributors
-Released under the MIT license
-https://github.com/Fody/Costura/blob/develop/LICENSE
