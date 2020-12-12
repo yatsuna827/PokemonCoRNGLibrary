@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PokemonStandardLibrary;
 using PokemonStandardLibrary.PokeDex.Gen3;
+using PokemonPRNG.LCG32;
 using PokemonPRNG.LCG32.GCLCG;
 
 namespace PokemonCoRNGLibrary
@@ -561,124 +562,112 @@ namespace PokemonCoRNGLibrary
             });
         }
     }
-    public class RentalPartyRank : IReadOnlyList<IReadOnlyList<GCSlot>>
+    public class RentalPartyRank : IGeneratable<RentalBattleResult>
     {
-        private readonly IReadOnlyList<IReadOnlyList<GCSlot>> parties;
-        public RentalBattleResult GenerateBattleTeam(uint seed)
+        public readonly string RuleName;
+        private readonly GCSlot[][] teams;
+        private static readonly string[] playerNames = { "レオ", "ユータ", "タツキ" };
+        public RentalBattleResult Generate(uint seed)
         {
-            uint StartingSeed = seed;
+            var startingSeed = seed;
 
-            uint EnemyTeamIndex = seed.GetRand(8);
-            uint PlayerTeamIndex;
-            do { PlayerTeamIndex = seed.GetRand(8); } while (EnemyTeamIndex == PlayerTeamIndex);
+            var enemyTeamIndex = seed.GetRand() & 0x7;
+            uint playerTeamIndex;
+            do { playerTeamIndex = seed.GetRand() & 0x7; } while (enemyTeamIndex == playerTeamIndex);
 
-            uint EnemyTSV = seed.GetRand() ^ seed.GetRand();
-            var EnemyParty = parties[(int)EnemyTeamIndex];
-            var EList = new List<GCIndividual>();
-            for (int i = 0; i < 6; i++)
-            {
-                EList.Add(EnemyParty[i].Generate(seed, out seed, EnemyTSV));
-            }
-            uint PlayerNameIndex = seed.GetRand(3);
+            var enemyTSV = seed.GetRand() ^ seed.GetRand();
+            var enemyTeam = teams[(int)enemyTeamIndex].Select(_ => _.Generate(seed, out seed, enemyTSV)).ToArray();
 
-            uint PlayerTSV = seed.GetRand() ^ seed.GetRand();
-            var PlayerParty = parties[(int)PlayerTeamIndex];
-            var PList = new List<GCIndividual>();
-            for (int i = 0; i < 6; i++)
-            {
-                PList.Add(PlayerParty[i].Generate(seed, out seed, PlayerTSV));
-            }
+            var playerNameIndex = seed.GetRand(3);
+            var playerName = playerNames[playerNameIndex];
+
+            var playerTSV = seed.GetRand() ^ seed.GetRand();
+            var playerTeam = teams[(int)playerTeamIndex].Select(_ => _.Generate(seed, out seed, playerTSV)).ToArray();
 
             return new RentalBattleResult()
             {
-                StartingSeed = StartingSeed,
-                FinishingSeed = seed,
-                code = (short)(PlayerNameIndex * 8 + PlayerTeamIndex),
-                PlayerName = RentalBattleResult.PlayerNameList[PlayerNameIndex],
-                EnemyParty = EList,
-                PlayerParty = PList
+                PlayerName = playerName,
+                EnemyParty = enemyTeam,
+                PlayerParty = playerTeam
             };
         }
-        public byte GenerateCode(uint seed, out uint finSeed)
+        public RentalBattleResult Generate(uint seed, out uint finSeed)
         {
-            uint EnemyTeamIndex = seed.GetRand(8);
-            uint PlayerTeamIndex;
-            do { PlayerTeamIndex = seed.GetRand(8); } while (EnemyTeamIndex == PlayerTeamIndex);
+            var startingSeed = seed;
 
-            uint EnemyTSV = seed.GetRand() ^ seed.GetRand();
-            var EnemyParty = parties[(int)EnemyTeamIndex];
-            var EList = new List<GCIndividual>();
-            for (int i = 0; i < 6; i++)
-            {
-                EList.Add(EnemyParty[i].Generate(seed, out seed, EnemyTSV));
-            }
-            uint PlayerNameIndex = seed.GetRand(3);
+            var enemyTeamIndex = seed.GetRand() & 0x7;
+            uint playerTeamIndex;
+            do { playerTeamIndex = seed.GetRand() & 0x7; } while (enemyTeamIndex == playerTeamIndex);
 
-            uint PlayerTSV = seed.GetRand() ^ seed.GetRand();
-            var PlayerParty = parties[(int)PlayerTeamIndex];
-            var PList = new List<GCIndividual>();
-            for (int i = 0; i < 6; i++)
-            {
-                PList.Add(PlayerParty[i].Generate(seed, out seed, PlayerTSV));
-            }
+            var enemyTSV = seed.GetRand() ^ seed.GetRand();
+            var enemyTeam = teams[(int)enemyTeamIndex].Select(_ => _.Generate(seed, out seed, enemyTSV)).ToArray();
+
+            var playerNameIndex = seed.GetRand(3);
+            var playerName = playerNames[playerNameIndex];
+
+            var playerTSV = seed.GetRand() ^ seed.GetRand();
+            var playerTeam = teams[(int)playerTeamIndex].Select(_ => _.Generate(seed, out seed, playerTSV)).ToArray();
 
             finSeed = seed;
 
-            return (byte)(PlayerNameIndex * 8 + PlayerTeamIndex);
+            return new RentalBattleResult()
+            {
+                PlayerName = playerName,
+                EnemyParty = enemyTeam,
+                PlayerParty = playerTeam
+            };
+        }
+
+        public byte GenerateCode(uint seed, out uint finSeed)
+        {
+            var enemyTeamIndex = seed.GetRand() & 0x7;
+            uint playerTeamIndex;
+            do { playerTeamIndex = seed.GetRand() & 0x7; } while (enemyTeamIndex == playerTeamIndex);
+
+            var enemyTSV = seed.GetRand() ^ seed.GetRand();
+            foreach (var poke in teams[(int)enemyTeamIndex])
+                poke.Generate(seed, out seed, enemyTSV);
+
+            var playerNameIndex = seed.GetRand(3);
+
+            var playerTSV = seed.GetRand() ^ seed.GetRand();
+            foreach (var poke in teams[playerTeamIndex])
+                poke.Generate(seed, out seed, playerTSV);
+
+            finSeed = seed;
+
+            return (byte)(playerNameIndex * 8 + playerTeamIndex);
         }
 
         public uint AdvanceSeed(uint seed)
         {
-            uint EnemyTeamIndex = seed.GetRand(8);
-            uint PlayerTeamIndex;
-            do { PlayerTeamIndex = seed.GetRand(8); } while (EnemyTeamIndex == PlayerTeamIndex);
+            var enemyTeamIndex = seed.GetRand() & 0x7;
+            uint playerTeamIndex;
+            do { playerTeamIndex = seed.GetRand() & 0x7; } while (enemyTeamIndex == playerTeamIndex);
 
-            uint EnemyTSV = seed.GetRand() ^ seed.GetRand();
-            var EnemyParty = parties[(int)EnemyTeamIndex];
-            for (int i = 0; i < 6; i++)
-            {
-                EnemyParty[i].Generate(seed, out seed, EnemyTSV);
-            }
+            var enemyTSV = seed.GetRand() ^ seed.GetRand();
+            foreach (var poke in teams[(int)enemyTeamIndex])
+                poke.Generate(seed, out seed, enemyTSV);
 
-            seed.GetRand(3); // PlayerName
+            seed.Advance(); // PlayerName
 
-            uint PlayerTSV = seed.GetRand() ^ seed.GetRand();
-            var PlayerParty = parties[(int)PlayerTeamIndex];
-            for (int i = 0; i < 6; i++)
-            {
-                PlayerParty[i].Generate(seed, out seed, PlayerTSV);
-            }
+            var playerTSV = seed.GetRand() ^ seed.GetRand();
+            foreach (var poke in teams[playerTeamIndex])
+                poke.Generate(seed, out seed, playerTSV);
 
             return seed;
         }
-        public readonly string RuleName;
+
         internal RentalPartyRank(string label, GCSlot[][] p)
         {
             RuleName = label;
-            parties = p;
-        }
-
-        public IReadOnlyList<GCSlot> this[int i] { get { return parties[i]; } }
-        public IReadOnlyList<GCSlot> this[uint i] { get { return parties[(int)i]; } }
-        public int Count { get { return parties.Count; } }
-
-        public IEnumerator<IReadOnlyList<GCSlot>> GetEnumerator()
-        {
-            return parties.AsEnumerable().GetEnumerator();
-        }
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
+            teams = p;
         }
     }
     public class RentalBattleResult
     {
-        static internal readonly string[] PlayerNameList = { "レオ", "ユータ", "タツキ" };
-        public short code { get; set; }
-        public string PlayerName { get; set; }
-        public IReadOnlyList<GCIndividual> PlayerParty { get; set; }
-        public IReadOnlyList<GCIndividual> EnemyParty { get; set; }
-        public uint StartingSeed { get; set; }
-        public uint FinishingSeed { get; set; }
+        public string PlayerName { get; internal set; }
+        public IReadOnlyList<GCIndividual> PlayerParty { get; internal set; }
+        public IReadOnlyList<GCIndividual> EnemyParty { get; internal set; }
     }
 }
