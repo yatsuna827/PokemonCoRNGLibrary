@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using PokemonPRNG.LCG32;
 using PokemonPRNG.LCG32.GCLCG;
 using PokemonStandardLibrary;
 
 namespace PokemonCoRNGLibrary
 {
-    public class CoDarkPokemon
+    /// <summary>
+    /// ダークポケモンの情報をまとめたクラスです. 
+    /// </summary>
+    public class CoDarkPokemon : IGeneratable<GCIndividual>
     {
         public readonly GCSlot darkPokemon;
         public readonly IReadOnlyList<GCSlot> preGeneratePokemons;
@@ -31,32 +35,32 @@ namespace PokemonCoRNGLibrary
             return darkPokemon.Generate(seed, out seed, DummyTSV);
         }
 
-        public IEnumerable<(uint seed, GCIndividual Individual)> CalcBack(uint h, uint a, uint b, uint c, uint d, uint s)
+        public IEnumerable<(uint seed, GCIndividual Individual)> CalcBack(uint h, uint a, uint b, uint c, uint d, uint s, bool deduplication = false)
         {
-            var resList = new List<(uint seed, GCIndividual individual)>();
             foreach (var genSeed in SeedFinder.FindGeneratingSeed(h, a, b, c, d, s, false))
             {
                 var stack = new Stack<(int Index, CalcBackCell Cell)>();
                 stack.Push((preGeneratePokemons.Count, CalcBackCell.CreateCell(darkPokemon, genSeed)));
-                while (stack.Count > 0)
+                var loopBreak = false;
+                while (!loopBreak && stack.Count > 0)
                 {
-                    (var index, var cell) = stack.Pop();
+                    (var index, var cell) = stack.Pop(); 
                     if (index-- == 0)
                     {
                         // tsv判定.
                         if (!cell.CheckTSVGeneration()) continue;
 
-                        resList.Add(cell.GetResult());
+                        yield return cell.GetResult();
+
+                        loopBreak = deduplication; // 重複を除く場合はloopBreakをtrueにしてループを抜ける.
+
                         continue;
                     }
-
-                    foreach (var _c in cell.GetGeneratableCell(preGeneratePokemons[index])) 
+                    foreach (var _c in cell.GetGeneratableCell(preGeneratePokemons[index]))
                         stack.Push((index, _c));
                 }
             }
-            return resList;
         }
-
 
         internal static readonly IReadOnlyList<CoDarkPokemon> darkPokemonList;
         internal static readonly Dictionary<string, CoDarkPokemon> darkPokemonDictionary;

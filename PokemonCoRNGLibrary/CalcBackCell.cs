@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using PokemonStandardLibrary;
+﻿using System.Collections.Generic;
 using PokemonPRNG.LCG32.GCLCG;
-using PokemonStandardLibrary.PokeDex.Gen3;
-using PokemonStandardLibrary.CommonExtension;
 
 namespace PokemonCoRNGLibrary
 {
@@ -23,12 +18,11 @@ namespace PokemonCoRNGLibrary
             this.core = new CalcBackCore(seed, slot);
             this.seed = seed;
             this.tsvCondition = 0x10000;
-
         }
-        private CalcBackCell(uint seed, uint tsv)
+        private CalcBackCell(CalcBackCell cell, uint seed, uint tsv)
         {
-            this.prevCell = this;
-            this.core = prevCell.core;
+            this.prevCell = cell;
+            this.core = cell.core;
             this.seed = seed;
             this.tsvCondition = tsv;
         }
@@ -63,7 +57,7 @@ namespace PokemonCoRNGLibrary
             while (true)
             {
                 // 条件を満たすPIDに当たるまで, seedを返し続ける.
-                yield return new CalcBackCell(seed.PrevSeed(6), currentCondition);
+                yield return new CalcBackCell(this, seed.PrevSeed(6), currentCondition);
 
                 var lid = seed.Back() >> 16;
                 var hid = seed.Back() >> 16;
@@ -98,7 +92,7 @@ namespace PokemonCoRNGLibrary
             var pid = skipped ? core.pid2 : core.pid1; // 色回避が発生してしまう場合があり、とても悲しい.
             var ind = slot.pokemon.GetIndividual(slot.Lv, core.ivs, pid, core.abilityIndex).SetRepSeed(core.representativeSeed).SetShinySkipped(skipped);
 
-            return (seed, ind);
+            return (seed.PrevSeed(2), ind);
         }
 
         class CalcBackCore
