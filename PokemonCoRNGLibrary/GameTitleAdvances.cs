@@ -7,7 +7,7 @@ using PokemonPRNG.LCG32.GCLCG;
 
 namespace PokemonCoRNGLibrary
 {
-    static class GameTitleAdvances
+    public static class GameTitleAdvances
     {
         private static readonly GCSlot dummySlot = new GCSlot(Pokemon.GetPokemon("Dummy", "M7F1"), Gender.Male);
         private static readonly IReadOnlyList<IReadOnlyList<GCSlot>> dummyTeam = new GCSlot[][]
@@ -48,11 +48,12 @@ namespace PokemonCoRNGLibrary
 
         /// <summary>
         /// タイトル画面入る前(ロゴが出てくるあたり？)で発生する消費.
+        /// 消費後の現在seedを返します.
         /// </summary>
         /// <param name="seed"></param>
         /// <param name="finSeed"></param>
         /// <returns></returns>
-        public static uint GameInitialization(this uint seed, out uint finSeed)
+        public static uint GameInitialization(this uint seed)
         {
             seed.Advance1000();
             seed.Advance(2); // tsv生成されてるけど色回避判定は無いらしい？
@@ -62,16 +63,17 @@ namespace PokemonCoRNGLibrary
             dummySlot.Generate(seed, out seed);
             seed.Advance(2); // 用途不明
 
-            return finSeed = seed;
+            return seed;
         }
 
         /// <summary>
         /// とにかくバトルの画面に入るときに発生する消費.
+        /// 消費後の現在seedを返します.
         /// </summary>
         /// <param name="seed"></param>
         /// <param name="finSeed"></param>
         /// <returns></returns>
-        public static uint GenerateDummyParty(this uint seed, out uint finSeed)
+        public static uint GenerateDummyParty(this uint seed)
         {
             seed.Advance(118);
             foreach(var team in dummyTeam)
@@ -83,7 +85,7 @@ namespace PokemonCoRNGLibrary
             }
             seed.Advance(7); // 完全に条件無しのダミーの生成
 
-            return finSeed = seed;
+            return seed;
         }
     }
 }

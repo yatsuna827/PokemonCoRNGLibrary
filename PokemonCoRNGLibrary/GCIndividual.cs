@@ -14,6 +14,7 @@ namespace PokemonCoRNGLibrary
         public uint RepresentativeSeed { get; private set; }
         public bool ShinySkipped { get; private set; }
 
+
         public GCIndividual SetRepSeed(uint seed) { RepresentativeSeed = seed; return this; }
         public GCIndividual SetShinySkipped(bool skipped) { ShinySkipped = skipped; return this; }
 
