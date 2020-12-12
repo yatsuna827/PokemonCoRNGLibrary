@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using PokemonPRNG.LCG32;
 using PokemonPRNG.LCG32.GCLCG;
 using PokemonStandardLibrary;
 
 namespace PokemonCoRNGLibrary
 {
-    public class CoStarter
+    public class CoStarterGenerator : IGeneratable<CoStarterResult>
     {
-        public static readonly GCSlot ESPEON = new GCSlot("エーフィ", 25);
-        public static readonly GCSlot UMBREON = new GCSlot("ブラッキー", 25);
-        public static CoStarterResult GenerateStarter(uint seed)
+        private static readonly GCSlot ESPEON = new GCSlot("エーフィ", 25);
+        private static readonly GCSlot UMBREON = new GCSlot("ブラッキー", 25);
+        public static readonly CoStarterGenerator Instance = new CoStarterGenerator();
+        private CoStarterGenerator() { }
+        public CoStarterResult Generate(uint seed)
         {
             seed.Advance1000();
             uint TID = seed.GetRand();
