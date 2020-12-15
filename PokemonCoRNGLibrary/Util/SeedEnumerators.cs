@@ -14,7 +14,7 @@ namespace PokemonCoRNGLibrary
         /// <param name="seed"></param>
         /// <param name="coolTime"></param>
         /// <returns></returns>
-        public static IEnumerable<(uint seed, int interval, uint lcgIndex)> EnumerateBlinkingSeed(this uint seed, int coolTime = 4)
+        public static IEnumerable<(uint seed, int interval, int frame, uint lcgIndex)> EnumerateBlinkingSeed(this uint seed, int coolTime = 4)
         {
             var blinkCounter = 0;
             var lastBlinkedFrame = 0;
@@ -27,7 +27,7 @@ namespace PokemonCoRNGLibrary
                 index++;
                 if (seed.GetRand_f() <= BlinkConst.blinkThresholds[blinkCounter - 10])
                 {
-                    yield return (seed, currentFrame - lastBlinkedFrame, index);
+                    yield return (seed, currentFrame - lastBlinkedFrame, currentFrame, index);
 
                     blinkCounter = 0;
                     lastBlinkedFrame = currentFrame;
@@ -71,6 +71,7 @@ namespace PokemonCoRNGLibrary
         /// <param name="seed"></param>
         /// <returns></returns>
         public static IEnumerable<uint> EnumerateSeedAtCipherLab(this uint seed) => new CipherLabEnumerator(seed).EnumerateSeed();
+
         /// <summary>
         /// ダークポケモン研究所B2Fの不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
         /// </summary>
