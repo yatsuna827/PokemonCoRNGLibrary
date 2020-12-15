@@ -8,6 +8,7 @@ namespace PokemonCoRNGLibrary
     public static class SeedFinder
     {
         private static readonly uint[][] LOWER;
+        private static readonly int[] minBlinkableBlank;　// randに対し, 「到達したときに瞬きをするような内部カウンタの値」の最小値.
 
         static SeedFinder()
         {
@@ -15,6 +16,8 @@ namespace PokemonCoRNGLibrary
             for (uint y = 0; y < 0x10000; y++) lower[(y.NextSeed() >> 16) & 0x7FFF].Add(y);
 
             LOWER = lower.Select(_ => _.ToArray()).ToArray();
+
+            minBlinkableBlank = Enumerable.Range(0, 0x10000).Select(_ => BlinkConst.blinkThresholds_even.UpperBound((uint)_)).ToArray();
         }
 
         /// <summary>
@@ -51,24 +54,22 @@ namespace PokemonCoRNGLibrary
         {
             var res = new List<uint>();
 
-            // 瞬き閾値
-            var thresh = BlinkConst.blinkThresholds_even;
-
             seed.Advance(minIndex);
             var n = maxIndex - minIndex + 1;
             var blinkCount = blinkInput.Length;
 
-            // 境界条件でバグらないように瞬き1回分余計に計算する. 
+            // i = maxまで計算できるように, 全て最大間隔で瞬きが行われた場合でも足りるだけ余分に計算しておく.
             var len = (int)n + 85 * (blinkCount + 2);
 
             // 「到達したときに瞬きをするような内部カウンタの値」の最小値に変換する.
-            var countList = seed.EnumerateRand().Take(len + 1).Select(_ => thresh.UpperBound(_)).ToArray();
+            var countList = seed.EnumerateRand().Take(len + 1).Select(_ => minBlinkableBlank[_]).ToArray();
 
             // 「その位置で瞬きをした場合の, 次の瞬きまでの間隔」.
-            var blankList = Enumerable.Repeat(86, len).ToArray();
-            for (int i = len - 1; i >= 0; i--)
-                for (int k = countList[i]; k <= Math.Min(i, 85); k++)
-                    blankList[i - k] = Math.Min(blankList[i - k], k);
+            // ここが定数倍大きいのでちょっと辛い.
+            var blankList = Enumerable.Repeat(86, len).ToArray(); // 86 = INF
+            for (int i = len - 1; i >= 0; i--) // 後ろから埋めていく. 確率的にcountListは大きい値が多く, 特に85になる確率が高い.
+                for (int k = countList[i]; k <= Math.Min(i, 85); k++) // kは『到達したときに瞬きするような内部カウンタの最小値』から85まで(境界を超えないように).
+                    blankList[i - k] = Math.Min(blankList[i - k], k); // kの定義より, i-kで瞬きをしたら, 次は少なくともiで瞬きが発生する.
 
             // 『iフレーム目に1回目の瞬きが行われた』と仮定してシミュレート.
             for (int i = 0; i < n; i++)
