@@ -24,13 +24,13 @@ namespace PokemonCoRNGLibrary
 
         public void AddIVsCriteria(uint[] minIVs, uint[] maxIVs) => criteria.Add(new IVsCriteria(minIVs.ToArray(), maxIVs.ToArray()));
         public void AddStatsCriteria(uint[] minStats, uint[] maxStats) => criteria.Add(new StatsCriteria(minStats.ToArray(), maxStats.ToArray()));
-        public void AddNatureCriteria(Nature[] targetNatures) => criteria.Add(new NatureCriteria(targetNatures));
+        public void AddNatureCriteria(params Nature[] targetNatures) => criteria.Add(new NatureCriteria(targetNatures));
         public void AddGenderCriteria(Gender targetGender) => criteria.Add(new GenderCriteria(targetGender));
         public void AddAbilityCriteria(string targetAbility) => criteria.Add(new AbilityCriteria(targetAbility));
         public void AddGCAbilityCriteria(string targetAbility) => criteria.Add(new GCAbilityCriteria(targetAbility));
         public void AddShinyCriteria(uint tsv, ShinyType shinyType) => criteria.Add(new ShinyCriteria(tsv, shinyType));
         public void AddHiddenPowerCriteria(uint minPower) => criteria.Add(new HiddenPowerCriteria(minPower));
-        public void AddHiddenPowerTypeCriteria(PokeType[] targetTypes) => criteria.Add(new HiddenPowerTypeCriteria(targetTypes));
+        public void AddHiddenPowerTypeCriteria(params PokeType[] targetTypes) => criteria.Add(new HiddenPowerTypeCriteria(targetTypes));
 
         public IndividualCriteria Build() => new IndividualCriteria(criteria.ToArray());
     }
@@ -75,7 +75,7 @@ namespace PokemonCoRNGLibrary
     {
         private readonly bool[] checkList = new bool[25];
         public override bool Check(GCIndividual item) => checkList[(uint)item.Nature];
-        internal NatureCriteria(params Nature[] natures) { foreach (var nature in natures) if (nature != Nature.other) checkList[(uint)nature] = true; }
+        internal NatureCriteria(Nature[] natures) { foreach (var nature in natures) if (nature != Nature.other) checkList[(uint)nature] = true; }
     }
 
     class GenderCriteria : IndividualCriteria
@@ -121,7 +121,7 @@ namespace PokemonCoRNGLibrary
     {
         private readonly bool[] checkList = new bool[18];
         public override bool Check(GCIndividual item) => checkList[(int)item.HiddenPowerType];
-        internal HiddenPowerTypeCriteria(params PokeType[] pokeTypes) { foreach (var pokeType in pokeTypes) checkList[(int)pokeType] = true; }
+        internal HiddenPowerTypeCriteria(PokeType[] pokeTypes) { foreach (var pokeType in pokeTypes) checkList[(int)pokeType] = true; }
     }
 
 }
