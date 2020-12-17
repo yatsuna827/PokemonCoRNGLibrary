@@ -10,7 +10,7 @@ namespace PokemonCoRNGLibrary
     public class GCIndividual : Pokemon.Individual
     {
         public new static readonly GCIndividual Empty = Pokemon.GetPokemon("Dummy").GetIndividual(1, new uint[6], 0, 0);
-        public string XDAbility { get; private set; }
+        public string GCAbility { get; private set; }
         public uint RepresentativeSeed { get; private set; }
         public bool ShinySkipped { get; private set; }
 
@@ -20,7 +20,7 @@ namespace PokemonCoRNGLibrary
 
         internal GCIndividual(Pokemon.Species species, uint pid, uint[] ivs, uint lv, uint xdability) : base(species, pid, ivs, lv)
         {
-            this.XDAbility = species.Ability[xdability];
+            this.GCAbility = species.Ability[xdability];
         }
     }
     static class GCExtension
