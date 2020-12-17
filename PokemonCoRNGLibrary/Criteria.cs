@@ -75,7 +75,7 @@ namespace PokemonCoRNGLibrary
     {
         private readonly bool[] checkList = new bool[25];
         public override bool Check(GCIndividual item) => checkList[(uint)item.Nature];
-        internal NatureCriteria(Nature[] natures) { foreach (var nature in natures) if (nature != Nature.other) checkList[(uint)nature] = true; }
+        internal NatureCriteria(params Nature[] natures) { foreach (var nature in natures) if (nature != Nature.other) checkList[(uint)nature] = true; }
     }
 
     class GenderCriteria : IndividualCriteria
@@ -121,7 +121,7 @@ namespace PokemonCoRNGLibrary
     {
         private readonly bool[] checkList = new bool[18];
         public override bool Check(GCIndividual item) => checkList[(int)item.HiddenPowerType];
-        internal HiddenPowerTypeCriteria(PokeType[] pokeTypes) { foreach (var pokeType in pokeTypes) checkList[(int)pokeType] = true; }
+        internal HiddenPowerTypeCriteria(params PokeType[] pokeTypes) { foreach (var pokeType in pokeTypes) checkList[(int)pokeType] = true; }
     }
 
 }
