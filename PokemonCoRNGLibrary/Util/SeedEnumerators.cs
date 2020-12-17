@@ -46,7 +46,7 @@ namespace PokemonCoRNGLibrary
             while (true)
             {
                 yield return seed;
-                if (seed.Advance() < 0x199A) seed.Advance(4); // 実際はfloatに変換して0.1fと比較している.
+                if (seed.GetRand() < 0x199A) seed.Advance(4); // 実際はfloatに変換して0.1fと比較している.
             }
         }
 
@@ -61,7 +61,7 @@ namespace PokemonCoRNGLibrary
             for (int frame = 0; true; )
             {
                 yield return (frame++, index++, seed);
-                if (seed.Advance() < 0x199A) { seed.Advance(4); index += 4; }
+                if (seed.GetRand() < 0x199A) { seed.Advance(4); index += 4; }
             }
         }
 
