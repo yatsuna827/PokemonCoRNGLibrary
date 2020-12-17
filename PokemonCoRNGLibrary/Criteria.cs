@@ -23,7 +23,7 @@ namespace PokemonCoRNGLibrary
         public IndividualCriteriaBuilder() => criteria = new List<IndividualCriteria>();
 
         public void AddIVsCriteria(uint[] minIVs, uint[] maxIVs) => criteria.Add(new IVsCriteria(minIVs.ToArray(), maxIVs.ToArray()));
-        public void AddStatsCriteria(uint[] minStats, uint[] maxStats) => criteria.Add(new StatsCriteria(minStats.ToArray(), maxStats.ToArray()));
+        public void AddStatsCriteria(uint[] targetStats) => criteria.Add(new StatsCriteria(targetStats.ToArray()));
         public void AddNatureCriteria(params Nature[] targetNatures) => criteria.Add(new NatureCriteria(targetNatures));
         public void AddGenderCriteria(Gender targetGender) => criteria.Add(new GenderCriteria(targetGender));
         public void AddAbilityCriteria(string targetAbility) => criteria.Add(new AbilityCriteria(targetAbility));
@@ -55,19 +55,15 @@ namespace PokemonCoRNGLibrary
 
     class StatsCriteria : IndividualCriteria
     {
-        private readonly uint[] minStats;
-        private readonly uint[] maxStats;
+        private readonly int[] indexes;
+        private readonly uint[] targetStats;
 
-        public override bool Check(GCIndividual item)
+        public override bool Check(GCIndividual item) => indexes.All(_ => targetStats[_] == item.Stats[_]);
+
+        internal StatsCriteria(uint[] targetStats)
         {
-            for (int i = 0; i < 6; i++)
-                if (item.Stats[i] < minStats[i] || maxStats[i] < item.Stats[i]) return false;
-            return true;
-        }
-        internal StatsCriteria(uint[] minStats, uint[] maxStats)
-        {
-            this.minStats = minStats;
-            this.maxStats = maxStats;
+            this.indexes = Enumerable.Range(0, 6).Where(_ => targetStats[_] != 0).ToArray();
+            this.targetStats = targetStats;
         }
     }
 
@@ -119,9 +115,16 @@ namespace PokemonCoRNGLibrary
 
     class HiddenPowerTypeCriteria : IndividualCriteria
     {
-        private readonly bool[] checkList = new bool[18];
-        public override bool Check(GCIndividual item) => checkList[(int)item.HiddenPowerType];
-        internal HiddenPowerTypeCriteria(PokeType[] pokeTypes) { foreach (var pokeType in pokeTypes) checkList[(int)pokeType] = true; }
+        private readonly PokeType targetType;
+        public override bool Check(GCIndividual item) => (item.HiddenPowerType & targetType) != 0;
+        internal HiddenPowerTypeCriteria(PokeType[] pokeTypes)
+        {
+            var t = PokeType.Non;
+            foreach (var type in pokeTypes)
+                t |= type;
+
+            targetType = t;
+        }
     }
 
 }
