@@ -9,8 +9,8 @@ namespace PokemonCoRNGLibrary
 {
     public class CoStarterGenerator : IGeneratable<CoStarterResult>
     {
-        private static readonly GCSlot ESPEON = new GCSlot("エーフィ", 25);
-        private static readonly GCSlot UMBREON = new GCSlot("ブラッキー", 25);
+        private static readonly GCSlot ESPEON = new GCSlot("エーフィ", 25, Gender.Male);
+        private static readonly GCSlot UMBREON = new GCSlot("ブラッキー", 25, Gender.Male);
         public static readonly CoStarterGenerator Instance = new CoStarterGenerator();
         private CoStarterGenerator() { }
         public CoStarterResult Generate(uint seed)
@@ -18,8 +18,8 @@ namespace PokemonCoRNGLibrary
             seed.Advance1000();
             uint TID = seed.GetRand();
             uint SID = seed.GetRand();
-            var e = ESPEON.Generate(seed, out seed, TID ^ SID);
             var u = UMBREON.Generate(seed, out seed, TID ^ SID);
+            var e = ESPEON.Generate(seed, out seed, TID ^ SID);
 
             return new CoStarterResult(TID, SID, e, u);
         }
