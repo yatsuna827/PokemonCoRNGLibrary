@@ -55,13 +55,16 @@ namespace PokemonCoRNGLibrary
             var res = new List<uint>();
 
             seed.Advance(minIndex);
+            blinkInput = blinkInput.Select(_ => _ - (5 + coolTime)).ToArray(); // 瞬き後のクールタイム分を引く.
+
             var n = maxIndex - minIndex + 1;
-            var blinkCount = blinkInput.Length;
 
             // i = maxまで計算できるように, 全て最大間隔で瞬きが行われた場合でも足りるだけ余分に計算しておく.
-            var len = (int)n + 85 * (blinkCount + 2);
+            var len = (int)n + 85 * (blinkInput.Length + 2);
 
             // 「到達したときに瞬きをするような内部カウンタの値」の最小値に変換する.
+            // UpperBoundしていたところは入力が高々65536通りしかないのであらかじめ計算しておくことでO(1)に落とせる.
+            // とはいえそこまで劇的に変わるわけではない(UpperBoundの計算量は十分定数に近いので).
             var countList = seed.EnumerateRand().Take(len + 1).Select(_ => minBlinkableBlank[_]).ToArray();
 
             // 「その位置で瞬きをした場合の, 次の瞬きまでの間隔」.
@@ -76,24 +79,21 @@ namespace PokemonCoRNGLibrary
             {
                 int idx = i;
                 int k;
-                for (k = 0; k < blinkCount; k++)
+                for (k = 0; k < blinkInput.Length; k++)
                 {
-                    // 上のblankListの計算では判定を行わない(5+coolTime)フレーム分が考慮されていない. 
-                    var blank = blankList[idx] + 5 + coolTime;
-
                     // 許容誤差を超えているなら次のフレームへ.
-                    if ((blinkInput[k] + allowanceLimitOfError) < blank || blank < (blinkInput[k] - allowanceLimitOfError)) break;
+                    if ((blinkInput[k] + allowanceLimitOfError) < blankList[idx] || blankList[idx] < (blinkInput[k] - allowanceLimitOfError)) break;
 
                     // 間隔ぶんをindexに加算する.
                     idx += blankList[idx] + 1;
                 }
 
                 // 入力と全て一致すればresに入れる.
-                if (k == blinkCount) res.Add((uint)idx);
+                if (k == blinkInput.Length) res.Add((uint)idx);
             }
 
             return res.Distinct().Select(_ => seed.NextSeed(_));
         }
-
+        
     }
 }
