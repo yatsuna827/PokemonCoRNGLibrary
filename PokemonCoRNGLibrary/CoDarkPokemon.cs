@@ -12,17 +12,17 @@ namespace PokemonCoRNGLibrary
     /// </summary>
     public class CoDarkPokemon : IGeneratable<GCIndividual>
     {
-        public readonly GCSlot darkPokemon;
+        public readonly GCSlot slot;
         public readonly IReadOnlyList<GCSlot> preGeneratePokemons;
 
-        internal CoDarkPokemon(string name, uint lv)
+        private CoDarkPokemon(string name, uint lv)
         {
-            darkPokemon = new GCSlot(name, lv);
+            slot = new GCSlot(name, lv);
             preGeneratePokemons = new GCSlot[0];
         }
-        internal CoDarkPokemon(string name, uint lv, GCSlot[] preGenerate)
+        private CoDarkPokemon(string name, uint lv, GCSlot[] preGenerate)
         {
-            darkPokemon = new GCSlot(name, lv);
+            slot = new GCSlot(name, lv);
             preGeneratePokemons = preGenerate;
         }
 
@@ -32,15 +32,14 @@ namespace PokemonCoRNGLibrary
             foreach(var pokemon in preGeneratePokemons)
                 pokemon.Generate(seed, out seed, DummyTSV);
 
-            return darkPokemon.Generate(seed, out seed, DummyTSV);
+            return slot.Generate(seed, out seed, DummyTSV);
         }
-
         public IEnumerable<(uint seed, GCIndividual Individual)> CalcBack(uint h, uint a, uint b, uint c, uint d, uint s, bool deduplication = false)
         {
             foreach (var genSeed in SeedFinder.FindGeneratingSeed(h, a, b, c, d, s, false))
             {
                 var stack = new Stack<(int Index, CalcBackCell Cell)>();
-                stack.Push((preGeneratePokemons.Count, CalcBackCell.CreateCell(darkPokemon, genSeed)));
+                stack.Push((preGeneratePokemons.Count, CalcBackCell.CreateCell(slot, genSeed)));
                 var loopBreak = false;
                 while (!loopBreak && stack.Count > 0)
                 {
@@ -62,8 +61,8 @@ namespace PokemonCoRNGLibrary
             }
         }
 
-        internal static readonly IReadOnlyList<CoDarkPokemon> darkPokemonList;
-        internal static readonly Dictionary<string, CoDarkPokemon> darkPokemonDictionary;
+        private static readonly IReadOnlyList<CoDarkPokemon> darkPokemonList;
+        private static readonly Dictionary<string, CoDarkPokemon> darkPokemonDictionary;
 
         public static CoDarkPokemon GetDarkPokemon(int index) => 0 <= index && index < darkPokemonList.Count ? darkPokemonList[index] : null;
         public static CoDarkPokemon GetDarkPokemon(string name) => darkPokemonDictionary.TryGetValue(name, out var p) ? p : null;
@@ -140,7 +139,7 @@ namespace PokemonCoRNGLibrary
             CoList.Add(new CoDarkPokemon("トゲチック", 20));
 
             darkPokemonList = CoList;
-            darkPokemonDictionary = CoList.ToDictionary(_ => _.darkPokemon.pokemon.Name, _ => _);
+            darkPokemonDictionary = CoList.ToDictionary(_ => _.slot.pokemon.Name, _ => _);
         }
     }
 }
