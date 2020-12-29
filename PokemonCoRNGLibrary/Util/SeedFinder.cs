@@ -178,12 +178,14 @@ namespace PokemonCoRNGLibrary
 
                 return true;
             };
-            int tail = blinkInput.Length;
-            for (int head=0; e.MoveNext() && blinkCache[head & 0xFF].Item2 <= n; head++, blinkCache[tail++ & 0xFF] = (e.Current.interval, e.Current.lcgIndex))
+            int head = 0, tail = blinkInput.Length;
+            do
             {
-                if (!check(head)) continue;
-                yield return e.Current.seed;
+                if (check(head++)) yield return e.Current.seed;
+                if (!e.MoveNext()) yield break;
+                blinkCache[tail++ & 0xFF] = (e.Current.interval, e.Current.lcgIndex);
             }
+            while (blinkCache[head & 0xFF].Item2 <= n);
         }
 
         /// <summary>
