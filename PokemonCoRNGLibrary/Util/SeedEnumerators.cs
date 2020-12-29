@@ -28,15 +28,17 @@ namespace PokemonCoRNGLibrary
                 }
             }
         }
-        public static IEnumerable<(uint seed, int interval, int frame, uint lcgIndex)> EnumerateBlinkingSeedInBattle(this uint seed, int coolTime = 4)
+        public static IEnumerable<(uint seed, int interval, int frame, uint lcgIndex)> EnumerateBlinkingSeedInBattle(this uint seed, int coolTime = 4, bool enemyBlinking = false)
         {
             var lastBlinkedFrame = 0;
             var player = new BlinkObject(10);
+            var enemy = new BlinkObject(10);
             var obj = new BlinkObject(coolTime);
             uint index = 0;
             for (var currentFrame = 1; true; currentFrame++)
             {
                 player.CountUp(ref seed, ref index);
+                if (enemyBlinking) enemy.CountUp(ref seed, ref index);
                 if (obj.CountUp(ref seed, ref index))
                 {
                     yield return (seed, currentFrame - lastBlinkedFrame, currentFrame, index);

@@ -17,6 +17,7 @@ namespace PokemonCoRNGLibrary
 
     public static class BlinkConst
     {
+        // レガシー.
         internal static readonly float[] blinkThresholds_float = new float[172]
         {
             new FLOAT(0x00000000).Dec,

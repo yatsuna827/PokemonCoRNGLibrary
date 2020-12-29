@@ -11,9 +11,9 @@ namespace PokemonCoRNGLibrary.IrregularAdvance
         private int remainCoolTime = 0;
         private int blinkCounter;
 
-        public void Initialize()
+        public void Initialize(int initialCounter)
         {
-            blinkCounter = 0;
+            blinkCounter = initialCounter; // ほんとは1で初期化なんだけど….
             remainCoolTime = 0;
         }
         public bool CountUp(ref uint seed, ref uint index)
@@ -29,6 +29,10 @@ namespace PokemonCoRNGLibrary.IrregularAdvance
 
             return true;
         }
-        public BlinkObject(int cool = 4) { coolTime = cool; Initialize(); }
+        public BlinkObject(int cool = 4, int initCounter = 0)
+        {
+            coolTime = cool;
+            Initialize(initCounter);
+        }
     }
 }
