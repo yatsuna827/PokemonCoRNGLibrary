@@ -94,7 +94,7 @@ namespace PokemonCoRNGLibrary
 
             return res.Distinct().Select(_ => seed.NextSeed(_));
         }
-        
+
         // 戦闘終了のタイミングで特定を行う.
         // inputがいくつかの瞬きの複合である可能性が高いのでどうしよう.
         public static IEnumerable<uint> FindCurrentSeedByBlinkInBattle(uint seed, uint minIndex, uint maxIndex, int[] blinkInput, int allowanceLimitOfError = 20, int coolTime = 4)
@@ -140,6 +140,88 @@ namespace PokemonCoRNGLibrary
             }
 
             return res.Distinct().Select(_ => seed.NextSeed(_));
+        }
+        
+        /// <summary>
+        /// 瞬きから現在seedを検索し, 条件に一致するものを返します.
+        /// 省メモリかつ高速ですが, 瞬きを数回捨てる必要があります.
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <param name="minIndex"></param>
+        /// <param name="maxIndex"></param>
+        /// <param name="blinkInput"></param>
+        /// <param name="allowanceLimitOfError"></param>
+        /// <param name="coolTime"></param>
+        /// <returns></returns>
+        public static IEnumerable<uint> FindCurrentSeedByBlinkFaster(uint seed, uint minIndex, uint maxIndex, int[] blinkInput, int allowanceLimitOfError = 20, int coolTime = 4)
+        {
+            seed.Advance(minIndex);
+
+            var n = (ulong)maxIndex - minIndex + 1;
+
+            var e = seed.EnumerateBlinkingSeed(coolTime).GetEnumerator();
+            var blinkCache = new (int,uint)[256]; // 瞬き間隔をキャッシュしておく配列.
+
+            for (int i = 0; i < blinkInput.Length; i++)
+            {
+                e.MoveNext();
+                blinkCache[i] = (e.Current.interval, e.Current.lcgIndex);
+            }
+
+            bool check(int k) 
+            { 
+                for (int i = 0; i < blinkInput.Length; i++)
+                {
+                    var b = blinkCache[(k + i) & 0xFF].Item1;
+                    if (blinkInput[i] + allowanceLimitOfError < b || b < blinkInput[i] - allowanceLimitOfError) return false;
+                }
+
+                return true;
+            };
+            int tail = blinkInput.Length;
+            for (int head=0; e.MoveNext() && blinkCache[head & 0xFF].Item2 <= n; head++, blinkCache[tail++ & 0xFF] = (e.Current.interval, e.Current.lcgIndex))
+            {
+                if (!check(head)) continue;
+                yield return e.Current.seed;
+            }
+        }
+
+        /// <summary>
+        /// 全範囲から検索します.
+        /// Fasterと同様に瞬きを数回捨てる必要があります. 使う意味は薄いです.
+        /// </summary>
+        /// <param name="blinkInput"></param>
+        /// <param name="allowanceLimitOfError"></param>
+        /// <param name="coolTime"></param>
+        /// <returns></returns>
+        public static IEnumerable<uint> FindCurrentSeedByBlink(int[] blinkInput, int allowanceLimitOfError = 20, int coolTime = 4)
+        {
+            var e = 0u.EnumerateBlinkingSeed(coolTime).GetEnumerator();
+            var blinkCache = new int[256]; // 瞬き間隔をキャッシュしておく配列.
+
+            for (int i = 0; i < blinkInput.Length; i++)
+            {
+                e.MoveNext();
+                blinkCache[i] = e.Current.interval;
+            }
+
+            bool check(int k)
+            {
+                for (int i = 0; i < blinkInput.Length; i++)
+                {
+                    var b = blinkCache[(k + i) & 0xFF];
+                    if (blinkInput[i] + allowanceLimitOfError < b || b < blinkInput[i] - allowanceLimitOfError) return false;
+                }
+
+                return true;
+            };
+
+            int tail = blinkInput.Length;
+            for (int head = 0; e.MoveNext(); head++, blinkCache[tail++ & 0xFF] = e.Current.interval)
+            {
+                if (!check(head)) continue;
+                yield return e.Current.seed;
+            }
         }
 
     }

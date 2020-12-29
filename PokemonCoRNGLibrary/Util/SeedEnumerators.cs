@@ -21,6 +21,7 @@ namespace PokemonCoRNGLibrary
             uint index = 0;
             for (var currentFrame = 1; true; currentFrame++)
             {
+                if (index == 0xFFFFFFFF) yield break;
                 if (obj.CountUp(ref seed, ref index))
                 {
                     yield return (seed, currentFrame - lastBlinkedFrame, currentFrame, index);
