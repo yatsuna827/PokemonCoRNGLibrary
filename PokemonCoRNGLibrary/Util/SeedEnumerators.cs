@@ -24,7 +24,7 @@ namespace PokemonCoRNGLibrary
                 blinkCounter += 2;
                 if (blinkCounter < 10) continue;
 
-                index++;
+                if (++index == 0) yield break; // LCG1周してしまった.
                 if (seed.GetRand_f() <= BlinkConst.blinkThresholds[blinkCounter - 10])
                 {
                     yield return (seed, currentFrame - lastBlinkedFrame, currentFrame, index);
