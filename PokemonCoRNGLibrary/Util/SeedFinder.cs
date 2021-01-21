@@ -217,7 +217,6 @@ namespace PokemonCoRNGLibrary
 
                 return true;
             };
-
             int tail = blinkInput.Length;
             for (int head = 0; e.MoveNext(); head++, blinkCache[tail++ & 0xFF] = e.Current.interval)
             {
@@ -225,6 +224,5 @@ namespace PokemonCoRNGLibrary
                 yield return e.Current.seed;
             }
         }
-
     }
 }

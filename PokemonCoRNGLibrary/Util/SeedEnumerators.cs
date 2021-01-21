@@ -78,18 +78,48 @@ namespace PokemonCoRNGLibrary
         }
 
         /// <summary>
-        /// ダークポケモン研究所B2Fの不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
+        /// パイラの洞窟の不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
+        /// consider4Framesは戦闘突入時の4消費を考慮するかどうかです. この4消費の後に不定消費が1フレームだけ入ります.
         /// </summary>
         /// <param name="seed"></param>
         /// <returns></returns>
-        public static IEnumerable<uint> EnumerateSeedAtCipherLab(this uint seed) => new CipherLabEnumerator(seed).EnumerateSeed();
+        public static IEnumerable<uint> EnumerateSeedAtPyriteCave(this uint seed, bool consider4Frames = true) => new PyriteCaveEnumerator(seed, consider4Frames).EnumerateSeed();
+
+        /// <summary>
+        /// パイラの洞窟の不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
+        /// consider4Framesは戦闘突入時の4消費を考慮するかどうかです. この4消費の後に不定消費が1フレームだけ入ります.
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <returns></returns>
+        public static IEnumerable<(int index, uint seed)> EnumerateSeedAtPyriteCaveWithIndex(this uint seed, bool consider4Frames = true) => new PyriteCaveEnumerator(seed, consider4Frames).EnumerateSeedWithIndex();
+
+        /// <summary>
+        /// ダークポケモン研究所B1Fの不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <returns></returns>
+        public static IEnumerable<uint> EnumerateSeedAtCipherLabB1F(this uint seed) => new VibravaEnumerator(seed).EnumerateSeed();
+
+        /// <summary>
+        /// ダークポケモン研究所B1Fの不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <returns></returns>
+        public static IEnumerable<(int index, uint seed)> EnumerateSeedAtCipherLabB1FWithIndex(this uint seed) => new VibravaEnumerator(seed).EnumerateSeedWithIndex();
 
         /// <summary>
         /// ダークポケモン研究所B2Fの不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
         /// </summary>
         /// <param name="seed"></param>
         /// <returns></returns>
-        public static IEnumerable<(int index, uint seed)> EnumerateSeedAtCipherLabWithIndex(this uint seed) => new CipherLabEnumerator(seed).EnumerateSeedWithIndex();
+        public static IEnumerable<uint> EnumerateSeedAtCipherLabB2F(this uint seed) => new CipherLabEnumerator(seed).EnumerateSeed();
+
+        /// <summary>
+        /// ダークポケモン研究所B2Fの不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <returns></returns>
+        public static IEnumerable<(int index, uint seed)> EnumerateSeedAtCipherLabB2FWithIndex(this uint seed) => new CipherLabEnumerator(seed).EnumerateSeedWithIndex();
 
         /// <summary>
         /// 町外れのスタンド屋外の不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
