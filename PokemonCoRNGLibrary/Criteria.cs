@@ -22,15 +22,17 @@ namespace PokemonCoRNGLibrary
         private readonly List<IndividualCriteria> criteria;
         public IndividualCriteriaBuilder() => criteria = new List<IndividualCriteria>();
 
-        public void AddIVsCriteria(uint[] minIVs, uint[] maxIVs) => criteria.Add(new IVsCriteria(minIVs.ToArray(), maxIVs.ToArray()));
-        public void AddStatsCriteria(uint[] targetStats) => criteria.Add(new StatsCriteria(targetStats.ToArray()));
-        public void AddNatureCriteria(params Nature[] targetNatures) => criteria.Add(new NatureCriteria(targetNatures));
-        public void AddGenderCriteria(Gender targetGender) => criteria.Add(new GenderCriteria(targetGender));
-        public void AddAbilityCriteria(string targetAbility) => criteria.Add(new AbilityCriteria(targetAbility));
-        public void AddGCAbilityCriteria(string targetAbility) => criteria.Add(new GCAbilityCriteria(targetAbility));
-        public void AddShinyCriteria(uint tsv, ShinyType shinyType) => criteria.Add(new ShinyCriteria(tsv, shinyType));
-        public void AddHiddenPowerCriteria(uint minPower) => criteria.Add(new HiddenPowerCriteria(minPower));
-        public void AddHiddenPowerTypeCriteria(params PokeType[] targetTypes) => criteria.Add(new HiddenPowerTypeCriteria(targetTypes));
+        private IndividualCriteriaBuilder AddCriteria(IndividualCriteria c) { criteria.Add(c); return this; }
+
+        public IndividualCriteriaBuilder AddIVsCriteria(uint[] minIVs, uint[] maxIVs) => AddCriteria(new IVsCriteria(minIVs.ToArray(), maxIVs.ToArray()));
+        public IndividualCriteriaBuilder AddStatsCriteria(uint[] targetStats) => AddCriteria(new StatsCriteria(targetStats.ToArray()));
+        public IndividualCriteriaBuilder AddNatureCriteria(params Nature[] targetNatures) => AddCriteria(new NatureCriteria(targetNatures));
+        public IndividualCriteriaBuilder AddGenderCriteria(Gender targetGender) => AddCriteria(new GenderCriteria(targetGender));
+        public IndividualCriteriaBuilder AddAbilityCriteria(string targetAbility) => AddCriteria(new AbilityCriteria(targetAbility));
+        public IndividualCriteriaBuilder AddGCAbilityCriteria(string targetAbility) => AddCriteria(new GCAbilityCriteria(targetAbility));
+        public IndividualCriteriaBuilder AddShinyCriteria(uint tsv, ShinyType shinyType) => AddCriteria(new ShinyCriteria(tsv, shinyType));
+        public IndividualCriteriaBuilder AddHiddenPowerCriteria(uint minPower) => AddCriteria(new HiddenPowerCriteria(minPower));
+        public IndividualCriteriaBuilder AddHiddenPowerTypeCriteria(params PokeType[] targetTypes) => AddCriteria(new HiddenPowerTypeCriteria(targetTypes));
 
         public IndividualCriteria Build() => new IndividualCriteria(criteria.ToArray());
     }
