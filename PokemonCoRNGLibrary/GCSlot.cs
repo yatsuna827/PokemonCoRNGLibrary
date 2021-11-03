@@ -1,4 +1,4 @@
-﻿using System;
+﻿using PokemonPRNG.LCG32;
 using PokemonPRNG.LCG32.GCLCG;
 using PokemonStandardLibrary;
 using PokemonStandardLibrary.CommonExtension;
@@ -7,14 +7,14 @@ using PokemonStandardLibrary.PokeDex.Gen3;
 namespace PokemonCoRNGLibrary
 {
     // 生成可能な個体の最低限の情報をまとめたクラス.
-    public class GCSlot
+    public class GCSlot : ISideEffectiveGeneratable<GCIndividual, uint>
     {
-        public readonly uint Lv;
-        public readonly Pokemon.Species pokemon;
-        public readonly Gender fixedGender;
-        public readonly Nature fixedNature;
+        public uint Lv { get; }
+        public Pokemon.Species Pokemon { get; }
+        public Gender FixedGender { get; }
+        public Nature FixedNature { get; }
 
-        public GCIndividual Generate(uint seed, out uint finSeed, uint tsv = 0x10000)
+        public GCIndividual Generate(ref uint seed, uint tsv = 0x10000)
         {
             var rep = seed;
             seed.Advance(2); // dummyPID
@@ -25,9 +25,9 @@ namespace PokemonCoRNGLibrary
             while (true)
             {
                 pid = (seed.GetRand() << 16) | seed.GetRand() ;
-                if (fixedGender != Gender.Genderless && pid.GetGender(pokemon.GenderRatio) != fixedGender)
+                if (FixedGender != Gender.Genderless && pid.GetGender(Pokemon.GenderRatio) != FixedGender)
                     continue;
-                if (fixedNature != Nature.other && (Nature)(pid % 25) != fixedNature)
+                if (FixedNature != Nature.other && (Nature)(pid % 25) != FixedNature)
                     continue;
                 if (skip = pid.IsShiny(tsv))
                     continue;
@@ -35,30 +35,29 @@ namespace PokemonCoRNGLibrary
                 break;
             }
 
-            finSeed = seed;
-            return pokemon.GetIndividual(Lv, IVs, pid, abilityIndex).SetRepSeed(rep).SetShinySkipped(skip);
+            return Pokemon.GetIndividual(Lv, IVs, pid, abilityIndex).SetRepSeed(rep).SetShinySkipped(skip);
         }
 
-        internal GCSlot(Pokemon.Species p, Gender g = Gender.Genderless, Nature n = Nature.other)
+        public GCSlot(Pokemon.Species p, Gender g = Gender.Genderless, Nature n = Nature.other)
         {
-            pokemon = p;
+            Pokemon = p;
             Lv = 50;
-            fixedGender = g;
-            fixedNature = n;
+            FixedGender = g;
+            FixedNature = n;
         }
-        internal GCSlot(string name, Gender g = Gender.Genderless, Nature n = Nature.other)
+        public GCSlot(string name, Gender g = Gender.Genderless, Nature n = Nature.other)
         {
-            pokemon = Pokemon.GetPokemon(name);
+            Pokemon = PokemonStandardLibrary.PokeDex.Gen3.Pokemon.GetPokemon(name);
             Lv = 50;
-            fixedGender = g;
-            fixedNature = n;
+            FixedGender = g;
+            FixedNature = n;
         }
-        internal GCSlot(string name, uint lv, Gender g = Gender.Genderless, Nature n = Nature.other)
+        public GCSlot(string name, uint lv, Gender g = Gender.Genderless, Nature n = Nature.other)
         {
-            pokemon = Pokemon.GetPokemon(name);
+            Pokemon = PokemonStandardLibrary.PokeDex.Gen3.Pokemon.GetPokemon(name);
             Lv = lv;
-            fixedGender = g;
-            fixedNature = n;
+            FixedGender = g;
+            FixedNature = n;
         }
     }
 }

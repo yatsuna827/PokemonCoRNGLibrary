@@ -578,13 +578,13 @@ namespace PokemonCoRNGLibrary
             do { playerTeamIndex = seed.GetRand() & 0x7; } while (enemyTeamIndex == playerTeamIndex);
 
             var enemyTSV = seed.GetRand() ^ seed.GetRand();
-            var enemyTeam = teams[(int)enemyTeamIndex].Select(_ => _.Generate(seed, out seed, enemyTSV)).ToArray();
+            var enemyTeam = teams[(int)enemyTeamIndex].Select(_ => _.Generate(ref seed, enemyTSV)).ToArray();
 
             var playerNameIndex = seed.GetRand(3);
             var playerName = playerNames[playerNameIndex];
 
             var playerTSV = seed.GetRand() ^ seed.GetRand();
-            var playerTeam = teams[(int)playerTeamIndex].Select(_ => _.Generate(seed, out seed, playerTSV)).ToArray();
+            var playerTeam = teams[(int)playerTeamIndex].Select(_ => _.Generate(ref seed, playerTSV)).ToArray();
 
             return new RentalBattleResult(head, seed, playerName, playerTeam, enemyTeam);
         }
@@ -597,13 +597,13 @@ namespace PokemonCoRNGLibrary
 
             var enemyTSV = seed.GetRand() ^ seed.GetRand();
             foreach (var poke in teams[(int)enemyTeamIndex])
-                poke.Generate(seed, out seed, enemyTSV);
+                poke.Generate(ref seed, enemyTSV);
 
             var playerNameIndex = seed.GetRand(3);
 
             var playerTSV = seed.GetRand() ^ seed.GetRand();
             foreach (var poke in teams[playerTeamIndex])
-                poke.Generate(seed, out seed, playerTSV);
+                poke.Generate(ref seed, playerTSV);
 
             finSeed = seed;
 
@@ -618,13 +618,13 @@ namespace PokemonCoRNGLibrary
 
             var enemyTSV = seed.GetRand() ^ seed.GetRand();
             foreach (var poke in teams[(int)enemyTeamIndex])
-                poke.Generate(seed, out seed, enemyTSV);
+                poke.Generate(ref seed, enemyTSV);
 
             seed.Advance(); // PlayerName
 
             var playerTSV = seed.GetRand() ^ seed.GetRand();
             foreach (var poke in teams[playerTeamIndex])
-                poke.Generate(seed, out seed, playerTSV);
+                poke.Generate(ref seed, playerTSV);
 
             return seed;
         }

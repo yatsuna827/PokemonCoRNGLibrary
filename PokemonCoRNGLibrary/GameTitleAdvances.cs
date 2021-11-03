@@ -59,8 +59,8 @@ namespace PokemonCoRNGLibrary
             seed.Advance(2); // tsv生成されてるけど色回避判定は無いらしい？
 
             // なんかエフィブラっぽいよね
-            dummySlot.Generate(seed, out seed);
-            dummySlot.Generate(seed, out seed);
+            dummySlot.Generate(ref seed);
+            dummySlot.Generate(ref seed);
             seed.Advance(2); // 用途不明
 
             return seed;
@@ -80,7 +80,7 @@ namespace PokemonCoRNGLibrary
             {
                 seed.Advance(2); // tsv生成されてるけど色回避判定は無いらしい？
                 foreach (var poke in team)
-                    poke.Generate(seed, out seed);
+                    poke.Generate(ref seed);
                 
             }
             seed.Advance(7); // 完全に条件無しのダミーの生成
