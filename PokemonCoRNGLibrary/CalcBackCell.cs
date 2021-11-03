@@ -34,8 +34,8 @@ namespace PokemonCoRNGLibrary
             var seed = this.seed;
             var tsv = this.tsvCondition;
 
-            var fixedNature = (uint)slot.fixedNature;
-            var fixedGender = slot.fixedGender;
+            var fixedNature = (uint)slot.FixedNature;
+            var fixedGender = slot.FixedGender;
 
             // PIDのチェック.
             // PIDが条件を満たしていなければyield break.
@@ -46,7 +46,7 @@ namespace PokemonCoRNGLibrary
                 var psv = hid ^ lid;
 
                 if ((pid % 25) != fixedNature) yield break; // 性格不一致
-                if (pid.GetGender(slot.pokemon.GenderRatio) != fixedGender) yield break; // 性別不一致
+                if (pid.GetGender(slot.Pokemon.GenderRatio) != fixedGender) yield break; // 性別不一致
                 if (tsv < 0x10000 && (psv ^ tsv) < 8) yield break; // TSVに条件がついているが, そのTSVだと色回避に引っかかってしまう場合
 
                 this.psvCondition = psv;
@@ -62,7 +62,7 @@ namespace PokemonCoRNGLibrary
                 var lid = seed.Back() >> 16;
                 var hid = seed.Back() >> 16;
                 var pid = hid << 16 | lid;
-                if (pid % 25 == fixedNature && pid.GetGender(slot.pokemon.GenderRatio) == fixedGender)
+                if (pid % 25 == fixedNature && pid.GetGender(slot.Pokemon.GenderRatio) == fixedGender)
                 {
                     // 性格・性別が一致するPIDに当たったら
                     if (currentCondition < 0x10000 && (lid ^ hid ^ currentCondition) >= 8) yield break; // TSV指定済みで色回避が発生しないなら終了.
@@ -90,7 +90,7 @@ namespace PokemonCoRNGLibrary
             var tsv = (seed >> 16) ^ (seed.PrevSeed() >> 16);
             var skipped = ((core.pid1 >> 16) ^ (core.pid1 & 0xFFFF) ^ tsv) < 8;
             var pid = skipped ? core.pid2 : core.pid1; // 色回避が発生してしまう場合があり、とても悲しい.
-            var ind = slot.pokemon.GetIndividual(slot.Lv, core.ivs, pid, core.abilityIndex).SetRepSeed(core.representativeSeed).SetShinySkipped(skipped);
+            var ind = slot.Pokemon.GetIndividual(slot.Lv, core.ivs, pid, core.abilityIndex).SetRepSeed(core.representativeSeed).SetShinySkipped(skipped);
 
             return (seed.PrevSeed(2), ind);
         }

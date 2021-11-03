@@ -18,8 +18,8 @@ namespace PokemonCoRNGLibrary
             seed.Advance1000();
             uint TID = seed.GetRand();
             uint SID = seed.GetRand();
-            var u = UMBREON.Generate(seed, out seed, TID ^ SID);
-            var e = ESPEON.Generate(seed, out seed, TID ^ SID);
+            var u = UMBREON.Generate(ref seed, TID ^ SID);
+            var e = ESPEON.Generate(ref seed, TID ^ SID);
 
             return new CoStarterResult(head, TID, SID, e, u);
         }

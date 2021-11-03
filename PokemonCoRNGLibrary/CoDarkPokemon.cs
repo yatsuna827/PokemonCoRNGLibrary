@@ -10,7 +10,7 @@ namespace PokemonCoRNGLibrary
     /// <summary>
     /// ダークポケモンの情報をまとめたクラスです. 
     /// </summary>
-    public class CoDarkPokemon : IGeneratable<GCIndividual>
+    public class CoDarkPokemon : IGeneratable<RNGResult<GCIndividual>>
     {
         public readonly GCSlot slot;
         public readonly IReadOnlyList<GCSlot> preGeneratePokemons;
@@ -26,13 +26,16 @@ namespace PokemonCoRNGLibrary
             preGeneratePokemons = preGenerate;
         }
 
-        public GCIndividual Generate(uint seed)
+        public RNGResult<GCIndividual> Generate(uint seed)
         {
+            var head = seed;
             uint DummyTSV = seed.GetRand() ^ seed.GetRand();
             foreach(var pokemon in preGeneratePokemons)
-                pokemon.Generate(seed, out seed, DummyTSV);
+                pokemon.Generate(ref seed, DummyTSV);
 
-            return slot.Generate(seed, out seed, DummyTSV);
+            var res = slot.Generate(ref seed, DummyTSV);
+
+            return new RNGResult<GCIndividual>(res, head, seed);
         }
         public IEnumerable<(uint seed, GCIndividual Individual)> CalcBack(uint h, uint a, uint b, uint c, uint d, uint s, bool deduplication = false)
         {
@@ -139,7 +142,7 @@ namespace PokemonCoRNGLibrary
             CoList.Add(new CoDarkPokemon("トゲチック", 20));
 
             darkPokemonList = CoList;
-            darkPokemonDictionary = CoList.ToDictionary(_ => _.slot.pokemon.Name, _ => _);
+            darkPokemonDictionary = CoList.ToDictionary(_ => _.slot.Pokemon.Name, _ => _);
         }
     }
 }
