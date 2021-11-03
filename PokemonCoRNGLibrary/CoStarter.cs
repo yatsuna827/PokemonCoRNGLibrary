@@ -11,24 +11,27 @@ namespace PokemonCoRNGLibrary
     {
         private static readonly GCSlot ESPEON = new GCSlot("エーフィ", 25, Gender.Male);
         private static readonly GCSlot UMBREON = new GCSlot("ブラッキー", 25, Gender.Male);
-        public static readonly CoStarterGenerator Instance = new CoStarterGenerator();
-        private CoStarterGenerator() { }
+
         public CoStarterResult Generate(uint seed)
         {
+            var head = seed;
             seed.Advance1000();
             uint TID = seed.GetRand();
             uint SID = seed.GetRand();
             var u = UMBREON.Generate(seed, out seed, TID ^ SID);
             var e = ESPEON.Generate(seed, out seed, TID ^ SID);
 
-            return new CoStarterResult(TID, SID, e, u);
+            return new CoStarterResult(head, TID, SID, e, u);
         }
 
         // なんでもワンライナーにすればいいってもんじゃない.
-        public IEnumerable<uint> CalcBack(uint tid, uint sid)
-            => LOWER[(sid - (0x43FDU * tid)) & 0xFFFF].Select(_ => ((tid << 16) | _).PrevSeed(1001)).Where(_ => IsAccessible(_));
+        public static IEnumerable<uint> CalcBack(uint tid, uint sid)
+            => LOWER[(sid - (0x43FDU * tid)) & 0xFFFF]
+                .Select(_ => ((tid << 16) | _)
+                .PrevSeed(1001))
+                .Where(_ => _.IsAccessibleInNameScreen());
 
-        public IEnumerable<uint> CalcBack(uint tid, uint pid, ShinyType shinyType)
+        public static IEnumerable<uint> CalcBack(uint tid, uint pid, ShinyType shinyType)
         {
             // 死ね.
             if (shinyType == ShinyType.NotShiny) yield break;
@@ -54,37 +57,19 @@ namespace PokemonCoRNGLibrary
             LOWER = lower.Select(_ => _.ToArray()).ToArray();
         }
 
-        // 名前画面の不定消費を考慮して実現できるかどうか. 
-        // ID決定までに最低でも数百消費は入るのでコーナーケースは無視してよい.
-        // 再帰でBack()の呼び出し/条件判定に若干の無駄はあるものの、どうせそんなに回数呼ばれないので誤差だと思っていい.
-        // https://twitter.com/sub_827/status/1339884393494532096
-        private static bool IsAccessible(uint seed)
-        {
-            var prev1 = seed > 0x1999FFFF; // a[i-1]
-            var prev2 = seed.Back() > 0x1999FFFF; // a[i-2]
-            var prev3 = seed.Back() > 0x1999FFFF; // a[i-3]
-            var prev4 = seed.Back() > 0x1999FFFF; // a[i-4]
-
-            if (prev1 && prev2 && prev3 && prev4) return true; // 直前の4つがスキップ条件満たさないなら安全.
-
-            if (seed.Back() < 0x199A0000 && IsAccessible(seed.PrevSeed())) return true;
-            if (seed.Back() < 0x199A0000 && prev1 && IsAccessible(seed.PrevSeed())) return true;
-            if (seed.Back() < 0x199A0000 && prev1 && prev2 && IsAccessible(seed.PrevSeed())) return true;
-            if (seed.Back() < 0x199A0000 && prev1 && prev2 && prev3 && IsAccessible(seed.PrevSeed())) return true;
-
-            return false;
-        }
     }
-    public class CoStarterResult
+    public readonly struct CoStarterResult
     {
+        public uint HeadSeed { get; }
         public readonly uint TID;
         public readonly uint SID;
         public readonly GCIndividual Espeon, Umbreon;
 
-        public static readonly CoStarterResult Empty = new CoStarterResult(0x10000, 0x10000, GCIndividual.Empty, GCIndividual.Empty);
+        public static readonly CoStarterResult Empty = new CoStarterResult(0, 0x10000, 0x10000, GCIndividual.Empty, GCIndividual.Empty);
 
-        internal CoStarterResult(uint tid, uint sid, GCIndividual espeon, GCIndividual umbreon)
+        internal CoStarterResult(uint head, uint tid, uint sid, GCIndividual espeon, GCIndividual umbreon)
         {
+            HeadSeed = head;
             TID = tid;
             SID = sid;
             Espeon = espeon;
