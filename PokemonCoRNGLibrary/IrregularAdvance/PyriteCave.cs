@@ -9,7 +9,7 @@ namespace PokemonCoRNGLibrary.IrregularAdvance
     /// <summary>
     /// パイラの洞窟にある3台のマシンの煙による不定消費をエミュレートするクラス.
     /// </summary>
-    class PyriteCaveCounter
+    public class PyriteCaveCounter
     {
         private readonly MainCounter[] mainCounters;
         private readonly Queue<CountDownValue> lazyGenerators;
