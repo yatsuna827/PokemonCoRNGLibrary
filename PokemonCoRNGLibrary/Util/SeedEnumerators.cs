@@ -16,22 +16,34 @@ namespace PokemonCoRNGLibrary
         /// <returns></returns>
         public static IEnumerable<(uint seed, int interval, int frame, uint lcgIndex)> EnumerateBlinkingSeed(this uint seed, int coolTime = 4)
         {
-            var blinkCounter = 0;
             var lastBlinkedFrame = 0;
-            var index = 0u;
+            var obj = new BlinkObject(coolTime);
+            uint index = 0;
             for (var currentFrame = 1; true; currentFrame++)
             {
-                blinkCounter += 2;
-                if (blinkCounter < 10) continue;
-
-                index++;
-                if (seed.GetRand_f() <= BlinkConst.blinkThresholds[blinkCounter - 10])
+                if (index == 0xFFFFFFFF) yield break;
+                if (obj.CountUp(ref seed, ref index))
                 {
                     yield return (seed, currentFrame - lastBlinkedFrame, currentFrame, index);
-
-                    blinkCounter = 0;
                     lastBlinkedFrame = currentFrame;
-                    currentFrame += coolTime;
+                }
+            }
+        }
+        public static IEnumerable<(uint seed, int interval, int frame, uint lcgIndex)> EnumerateBlinkingSeedInBattle(this uint seed, int coolTime = 4, bool enemyBlinking = false)
+        {
+            var lastBlinkedFrame = 0;
+            var player = new BlinkObject(10);
+            var enemy = new BlinkObject(10);
+            var obj = new BlinkObject(coolTime);
+            uint index = 0;
+            for (var currentFrame = 1; true; currentFrame++)
+            {
+                player.CountUp(ref seed, ref index);
+                if (enemyBlinking) enemy.CountUp(ref seed, ref index);
+                if (obj.CountUp(ref seed, ref index))
+                {
+                    yield return (seed, currentFrame - lastBlinkedFrame, currentFrame, index);
+                    lastBlinkedFrame = currentFrame;
                 }
             }
         }
@@ -66,18 +78,26 @@ namespace PokemonCoRNGLibrary
         }
 
         /// <summary>
-        /// ダークポケモン研究所B2Fの不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
+        /// パイラの洞窟の不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
+        /// consider4Framesは戦闘突入時の4消費を考慮するかどうかです. この4消費の後に不定消費が1フレームだけ入ります.
         /// </summary>
         /// <param name="seed"></param>
         /// <returns></returns>
-        public static IEnumerable<uint> EnumerateSeedAtCipherLab(this uint seed) => new CipherLabEnumerator(seed).EnumerateSeed();
+        public static IEnumerable<uint> EnumerateSeedAtPyriteCave(this uint seed, bool consider4Frames = true) => new PyriteCaveEnumerator(seed, consider4Frames).EnumerateSeed();
+
+        /// <summary>
+        /// ダークポケモン研究所B1Fの不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <returns></returns>
+        public static IEnumerable<uint> EnumerateSeedAtCipherLabB1F(this uint seed) => new VibravaEnumerator(seed).EnumerateSeed();
 
         /// <summary>
         /// ダークポケモン研究所B2Fの不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
         /// </summary>
         /// <param name="seed"></param>
         /// <returns></returns>
-        public static IEnumerable<(int index, uint seed)> EnumerateSeedAtCipherLabWithIndex(this uint seed) => new CipherLabEnumerator(seed).EnumerateSeedWithIndex();
+        public static IEnumerable<uint> EnumerateSeedAtCipherLabB2F(this uint seed) => new CipherLabEnumerator(seed).EnumerateSeed();
 
         /// <summary>
         /// 町外れのスタンド屋外の不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
@@ -85,13 +105,6 @@ namespace PokemonCoRNGLibrary
         /// <param name="seed"></param>
         /// <returns></returns>
         public static IEnumerable<uint> EnumerateSeedAtOutskirtStand(this uint seed) => new OutskirtStandEnumerator(seed).EnumerateSeed();
-
-        /// <summary>
-        /// 町外れのスタンド屋外の不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
-        /// </summary>
-        /// <param name="seed"></param>
-        /// <returns></returns>
-        public static IEnumerable<(int index, uint seed)> EnumerateSeedAtOutskirtStandWithIndex(this uint seed) => new OutskirtStandEnumerator(seed).EnumerateSeedWithIndex();
 
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PokemonStandardLibrary;
 using PokemonStandardLibrary.PokeDex.Gen3;
+using PokemonPRNG;
 using PokemonPRNG.LCG32;
 using PokemonPRNG.LCG32.GCLCG;
 
@@ -564,12 +565,13 @@ namespace PokemonCoRNGLibrary
     }
     public class RentalPartyRank : IGeneratable<RentalBattleResult>
     {
-        public readonly string RuleName;
+        public string RuleName { get; }
+
         private readonly GCSlot[][] teams;
         private static readonly string[] playerNames = { "レオ", "ユータ", "タツキ" };
         public RentalBattleResult Generate(uint seed)
         {
-            var startingSeed = seed;
+            var head = seed;
 
             var enemyTeamIndex = seed.GetRand() & 0x7;
             uint playerTeamIndex;
@@ -584,38 +586,7 @@ namespace PokemonCoRNGLibrary
             var playerTSV = seed.GetRand() ^ seed.GetRand();
             var playerTeam = teams[(int)playerTeamIndex].Select(_ => _.Generate(seed, out seed, playerTSV)).ToArray();
 
-            return new RentalBattleResult()
-            {
-                PlayerName = playerName,
-                EnemyParty = enemyTeam,
-                PlayerParty = playerTeam
-            };
-        }
-        public RentalBattleResult Generate(uint seed, out uint finSeed)
-        {
-            var startingSeed = seed;
-
-            var enemyTeamIndex = seed.GetRand() & 0x7;
-            uint playerTeamIndex;
-            do { playerTeamIndex = seed.GetRand() & 0x7; } while (enemyTeamIndex == playerTeamIndex);
-
-            var enemyTSV = seed.GetRand() ^ seed.GetRand();
-            var enemyTeam = teams[(int)enemyTeamIndex].Select(_ => _.Generate(seed, out seed, enemyTSV)).ToArray();
-
-            var playerNameIndex = seed.GetRand(3);
-            var playerName = playerNames[playerNameIndex];
-
-            var playerTSV = seed.GetRand() ^ seed.GetRand();
-            var playerTeam = teams[(int)playerTeamIndex].Select(_ => _.Generate(seed, out seed, playerTSV)).ToArray();
-
-            finSeed = seed;
-
-            return new RentalBattleResult()
-            {
-                PlayerName = playerName,
-                EnemyParty = enemyTeam,
-                PlayerParty = playerTeam
-            };
+            return new RentalBattleResult(head, seed, playerName, playerTeam, enemyTeam);
         }
 
         public byte GenerateCode(uint seed, out uint finSeed)
@@ -664,10 +635,21 @@ namespace PokemonCoRNGLibrary
             teams = p;
         }
     }
-    public class RentalBattleResult
+    public readonly struct RentalBattleResult
     {
-        public string PlayerName { get; internal set; }
-        public IReadOnlyList<GCIndividual> PlayerParty { get; internal set; }
-        public IReadOnlyList<GCIndividual> EnemyParty { get; internal set; }
+        public uint HeadSeed { get; }
+        public uint TailSeed { get; }
+        public string PlayerName { get; }
+        public IReadOnlyList<GCIndividual> PlayerTeam { get; }
+        public IReadOnlyList<GCIndividual> EnemyTeam { get; }
+
+        public RentalBattleResult(uint head, uint tail, string pName, GCIndividual[] p, GCIndividual[] e)
+        {
+            HeadSeed = head;
+            TailSeed = tail;
+            PlayerName = pName;
+            PlayerTeam = p;
+            EnemyTeam = e;
+        }
     }
 }
