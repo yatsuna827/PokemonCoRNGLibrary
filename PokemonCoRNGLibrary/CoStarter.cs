@@ -58,14 +58,14 @@ namespace PokemonCoRNGLibrary
         }
 
     }
+
     public readonly struct CoStarterResult
     {
         public uint HeadSeed { get; }
-        public readonly uint TID;
-        public readonly uint SID;
-        public readonly GCIndividual Espeon, Umbreon;
-
-        public static readonly CoStarterResult Empty = new CoStarterResult(0, 0x10000, 0x10000, GCIndividual.Empty, GCIndividual.Empty);
+        public uint TID { get; }
+        public uint SID { get; }
+        public GCIndividual Espeon { get; }
+        public GCIndividual Umbreon { get; }
 
         internal CoStarterResult(uint head, uint tid, uint sid, GCIndividual espeon, GCIndividual umbreon)
         {
