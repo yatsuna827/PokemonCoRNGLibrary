@@ -5,9 +5,9 @@ using PokemonPRNG.LCG32.GCLCG;
 
 namespace PokemonCoRNGLibrary
 {
-    public readonly struct AdvanceResultStruct
+    public readonly struct BattleNowAdvanceResult
     {
-        private readonly static Dictionary<char, string> rules = new Dictionary<char, string>()
+        private readonly static Dictionary<char, string> rulesShort = new Dictionary<char, string>()
         {
             {'0',"シ最"},
             {'1',"シ強"},
@@ -18,13 +18,25 @@ namespace PokemonCoRNGLibrary
             {'6',"ダ普"},
             {'7',"ダ弱"},
         };
+        private readonly static Dictionary<char, string> rulesFull = new Dictionary<char, string>()
+        {
+            {'0',"シングル最強"},
+            {'1',"シングル強い"},
+            {'2',"シングル普通"},
+            {'3',"シングル弱い"},
+            {'4',"ダブル最強"},
+            {'5',"ダブル強い"},
+            {'6',"ダブル普通"},
+            {'7',"ダブル弱い"},
+        };
 
         public uint Seed { get; }
+        public int Count { get => _code.Length; }
 
         private readonly string _code;
-        public string GetProcedure() => string.Join("→", _code.Select(_ => rules[_]));
+        public string[] GetProcedure(bool shortHand = false) => _code.Select(_ => shortHand ? rulesShort[_] : rulesFull[_]).ToArray();
 
-        public AdvanceResultStruct(uint seed, string code)
+        public BattleNowAdvanceResult(uint seed, string code)
             => (Seed, _code) = (seed, code);
     }
 
@@ -62,7 +74,7 @@ namespace PokemonCoRNGLibrary
         /// <param name="targetSeed"></param>
         /// <param name="range"></param>
         /// <returns></returns>
-        public static IEnumerable<AdvanceResultStruct> Advance(uint currentSeed, uint targetStep, uint range)
+        public static IEnumerable<BattleNowAdvanceResult> Advance(uint currentSeed, uint targetStep, uint range)
         {
             if (targetStep > 0x100000) throw new ArgumentException("targetStepが大きすぎます. 0x100000消費以内にしてください");
 
@@ -83,7 +95,7 @@ namespace PokemonCoRNGLibrary
                     var nextCode = code + i.ToString();
 
                     if (targetStep - nextStep <= range)
-                        yield return new AdvanceResultStruct(nextSeed, nextCode);
+                        yield return new BattleNowAdvanceResult(nextSeed, nextCode);
 
                     queue.Enqueue((nextSeed, nextCode));
                 }
