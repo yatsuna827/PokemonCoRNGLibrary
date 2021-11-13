@@ -13,7 +13,10 @@ namespace PokemonCoRNGLibrary.IrregularAdvance
 
         public void Initialize(int initialCounter)
         {
-            blinkCounter = initialCounter; // ほんとは1で初期化なんだけど….
+            // ほんとは1で初期化なんだけど….
+            // もっと厳密にいえば0,2,5,7,9,...と進む
+            // でもカウンタが10以上になるまでは判定は発生しないので、1,3,5,7,9,10...と進んだのと特に違いはない
+            blinkCounter = initialCounter; 
             remainCoolTime = 0;
         }
         public bool CountUp(ref uint seed, ref uint index)

@@ -17,7 +17,7 @@ namespace PokemonCoRNGLibrary
         public static IEnumerable<(uint seed, int interval, int frame, uint lcgIndex)> EnumerateBlinkingSeed(this uint seed, int coolTime = 4)
         {
             var lastBlinkedFrame = 0;
-            var obj = new BlinkObject(coolTime);
+            var obj = new BlinkObject(coolTime, 1);
             uint index = 0;
             for (var currentFrame = 1; true; currentFrame++)
             {
