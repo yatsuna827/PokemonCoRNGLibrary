@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using PokemonStandardLibrary;
-using PokemonStandardLibrary.PokeDex.Gen3;
+using PokemonStandardLibrary.Gen3;
 using PokemonPRNG;
 using PokemonPRNG.LCG32;
 using PokemonPRNG.LCG32.GCLCG;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using PokemonStandardLibrary;
-using PokemonStandardLibrary.PokeDex.Gen3;
+using PokemonStandardLibrary.Gen3;
 
 namespace PokemonCoRNGLibrary
 {

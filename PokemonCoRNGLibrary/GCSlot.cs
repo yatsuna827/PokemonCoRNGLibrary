@@ -2,7 +2,7 @@
 using PokemonPRNG.LCG32.GCLCG;
 using PokemonStandardLibrary;
 using PokemonStandardLibrary.CommonExtension;
-using PokemonStandardLibrary.PokeDex.Gen3;
+using PokemonStandardLibrary.Gen3;
 
 namespace PokemonCoRNGLibrary
 {
@@ -21,7 +21,7 @@ namespace PokemonCoRNGLibrary
             uint[] IVs = seed.GetIVs();
             var abilityIndex = seed.GetRand(2);
             uint pid;
-            bool skip;
+            bool skip = false;
             while (true)
             {
                 pid = (seed.GetRand() << 16) | seed.GetRand() ;
@@ -29,9 +29,12 @@ namespace PokemonCoRNGLibrary
                     continue;
                 if (FixedNature != Nature.other && (Nature)(pid % 25) != FixedNature)
                     continue;
-                if (skip = pid.IsShiny(tsv))
+                if (pid.IsShiny(tsv))
+                {
+                    skip |= true;
                     continue;
 
+                }
                 break;
             }
 
@@ -47,14 +50,14 @@ namespace PokemonCoRNGLibrary
         }
         public GCSlot(string name, Gender g = Gender.Genderless, Nature n = Nature.other)
         {
-            Pokemon = PokemonStandardLibrary.PokeDex.Gen3.Pokemon.GetPokemon(name);
+            Pokemon = PokemonStandardLibrary.Gen3.Pokemon.GetPokemon(name);
             Lv = 50;
             FixedGender = g;
             FixedNature = n;
         }
         public GCSlot(string name, uint lv, Gender g = Gender.Genderless, Nature n = Nature.other)
         {
-            Pokemon = PokemonStandardLibrary.PokeDex.Gen3.Pokemon.GetPokemon(name);
+            Pokemon = PokemonStandardLibrary.Gen3.Pokemon.GetPokemon(name);
             Lv = lv;
             FixedGender = g;
             FixedNature = n;
