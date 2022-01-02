@@ -63,6 +63,30 @@ namespace PokemonCoRNGLibrary
         }
 
         /// <summary>
+        /// スナッチリストを開いたときに発生する消費をシミュレートし, 無限にseedを返し続けます.
+        /// PID再計算の発生に対応しています.
+        /// SkipやTakeと組み合わせてください.
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <returns></returns>
+        public static IEnumerable<uint> EnumerateSnatchListAdvance(this uint seed)
+        {
+            while (true)
+            {
+                yield return seed;
+                seed.Advance(5);
+                // ID = 0x00000000による色回避判定が入る
+                // GCのLCGパラメータでは、最大で2回の再計算が発生する
+                var psv = seed.GetRand() ^ seed.GetRand();
+                if (psv < 8)
+                {
+                    psv = seed.GetRand() ^ seed.GetRand();
+                    if (psv < 8) seed.Advance(2);
+                }
+            }
+        }
+
+        /// <summary>
         /// 名前入力画面での不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
         /// </summary>
         /// <param name="seed"></param>
