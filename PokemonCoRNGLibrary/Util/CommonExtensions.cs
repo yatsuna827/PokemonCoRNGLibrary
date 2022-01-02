@@ -36,5 +36,11 @@ namespace PokemonCoRNGLibrary
         }
 
         internal static uint Advance1000(ref this uint seed) => seed = 0xDD867B21 * seed + 0xD252C5A8;
+        internal static uint BackRand(ref this uint seed)
+        {
+            var r = seed >> 16;
+            seed.Back();
+            return r;
+        }
     }
 }

@@ -9,6 +9,7 @@ namespace PokemonCoRNGLibrary
         private readonly CalcBackCore core;
         private readonly CalcBackCell prevCell;
         private readonly uint tsvCondition;
+
         private uint psvCondition;
 
         private CalcBackCell() { }
@@ -27,6 +28,12 @@ namespace PokemonCoRNGLibrary
             this.tsvCondition = tsv;
         }
 
+        /// <summary>
+        /// 逆算対象のポケモンのSlotと、対象ポケモンの生成開始seedを渡して、Cellを生成します。
+        /// </summary>
+        /// <param name="slot"></param>
+        /// <param name="seed"></param>
+        /// <returns></returns>
         public static CalcBackCell CreateCell(GCSlot slot, uint seed) => new CalcBackCell(slot, seed);
 
         public IEnumerable<CalcBackCell> GetGeneratableCell(GCSlot slot)
