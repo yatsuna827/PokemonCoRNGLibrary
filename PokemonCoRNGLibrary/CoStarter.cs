@@ -182,7 +182,7 @@ namespace PokemonCoRNGLibrary
         public GCIndividual Espeon { get; }
         public GCIndividual Umbreon { get; }
 
-        internal CoStarterResult(uint head, uint tid, uint sid, GCIndividual espeon, GCIndividual umbreon)
+        public CoStarterResult(uint head, uint tid, uint sid, GCIndividual espeon, GCIndividual umbreon)
         {
             HeadSeed = head;
             TID = tid;
