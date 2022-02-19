@@ -10,7 +10,7 @@ namespace PokemonCoRNGLibrary.Criteria.Starter
     {
         private readonly ICriteria<GCIndividual> criteria;
         public bool CheckConditions(CoStarterResult item)
-            => criteria.CheckConditions(item.Umbreon);
+            => criteria.CheckConditions(item.Espeon);
 
         public EspeonCriteria(ICriteria<GCIndividual> criteria)
             => this.criteria = criteria;

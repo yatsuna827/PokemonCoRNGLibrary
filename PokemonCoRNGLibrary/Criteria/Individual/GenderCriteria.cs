@@ -7,6 +7,6 @@ namespace PokemonCoRNGLibrary.Criteria
     {
         private readonly Gender gender;
         public bool CheckConditions(GCIndividual item) => item.Gender == gender;
-        internal GenderCriteria(Gender gender) => this.gender = gender;
+        public GenderCriteria(Gender gender) => this.gender = gender;
     }
 }

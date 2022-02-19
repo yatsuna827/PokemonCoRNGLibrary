@@ -6,12 +6,12 @@ namespace PokemonCoRNGLibrary.Criteria
     {
         private readonly string ability;
         public bool CheckConditions(GCIndividual item) => item.Ability == ability;
-        internal AbilityCriteria(string ability) => this.ability = ability;
+        public AbilityCriteria(string ability) => this.ability = ability;
     }
     public class GCAbilityCriteria : ICriteria<GCIndividual>
     {
         private readonly string ability;
         public bool CheckConditions(GCIndividual item) => item.Ability == ability;
-        internal GCAbilityCriteria(string ability) => this.ability = ability;
+        public GCAbilityCriteria(string ability) => this.ability = ability;
     }
 }
