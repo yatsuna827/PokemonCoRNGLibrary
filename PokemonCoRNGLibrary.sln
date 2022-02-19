@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonCoRNGLibrary", "Poke
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{953EE945-8ABD-464A-A396-2FD9F16BBEA5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonCoRNGLibrary.StarterCriteriaLanguage", "PokemonCoRNGLibrary.IDCriteriaLanguage\PokemonCoRNGLibrary.StarterCriteriaLanguage.csproj", "{B19B43E3-A4EA-4F6A-95F2-19FD5048DA30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonCoRNGLibrary.StarterCriteriaLanguage", "PokemonCoRNGLibrary.StarterCriteriaLanguage\PokemonCoRNGLibrary.StarterCriteriaLanguage.csproj", "{B19B43E3-A4EA-4F6A-95F2-19FD5048DA30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
