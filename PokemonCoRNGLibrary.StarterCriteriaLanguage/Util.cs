@@ -317,7 +317,16 @@ namespace PokemonCoRNGLibrary.StarterCriteriaLanguage
             var it = new SymbolIterator(ConvertToTokens(source).ConvertToSymbols().GetEnumerator());
             var parser = new ListParser<CoStarterResult>(new CoStarterCriteriaParser());
 
-            return new OrCriteriaNode<CoStarterResult>(parser.Parse(it));
+            try
+            {
+                var node = new OrCriteriaNode<CoStarterResult>(parser.Parse(it));
+                if (it.HasValue) throw new UnexpectedSymbolException(it.GetAndNext());
+                return node;
+            }
+            catch(Exception e)
+            {
+                throw new Exception($"{e.Message}{Environment.NewLine}{it.GetUsedSymbols()}<-");
+            }
         }
     }
 }

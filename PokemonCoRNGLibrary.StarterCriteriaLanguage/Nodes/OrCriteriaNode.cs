@@ -17,7 +17,7 @@ namespace PokemonCoRNGLibrary.StarterCriteriaLanguage
         }
 
         public ICriteria<TArg> Build()
-            => AND(items.Select(_ => _.Build()).ToArray());
+            => OR(items.Select(_ => _.Build()).ToArray());
 
         public string Serialize()
             => items.Length == 1 ?
@@ -36,7 +36,7 @@ namespace PokemonCoRNGLibrary.StarterCriteriaLanguage
         }
 
         public ICriteria<TArg> Build()
-            => AND(items.Select(_ => _.Build()).ToArray());
+            => OR(items.Select(_ => _.Build()).ToArray());
 
         public string Serialize()
             => items.Length == 1 ?

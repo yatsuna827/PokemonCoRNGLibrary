@@ -23,7 +23,7 @@ namespace PokemonCoRNGLibrary
             this.GCAbility = species.Ability[xdability];
         }
     }
-    static class GCExtension
+    public static class GCExtension
     {
         public static GCIndividual GetIndividual(this Pokemon.Species species, uint Lv, uint[] IVs, uint PID, uint ability)
             => new GCIndividual(species, PID, IVs, Lv, ability);

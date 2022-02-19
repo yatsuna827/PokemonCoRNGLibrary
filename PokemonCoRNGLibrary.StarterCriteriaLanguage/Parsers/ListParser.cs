@@ -19,7 +19,10 @@ namespace PokemonCoRNGLibrary.StarterCriteriaLanguage
             while (iterator.HasValue)
             {
                 if (iterator.Peek == ListClose.Instance)
+                {
+                    iterator.MoveNext();
                     return list.ToArray();
+                }
 
                 list.Add(parser.Parse(iterator));
 
@@ -59,7 +62,10 @@ namespace PokemonCoRNGLibrary.StarterCriteriaLanguage
             {
                 symbol = iterator.Peek;
                 if (symbol == ListClose.Instance)
+                {
+                    iterator.MoveNext();
                     return list.ToArray();
+                }
 
                 list.Add(parser.Parse(iterator));
 
