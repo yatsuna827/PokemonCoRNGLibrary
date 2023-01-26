@@ -242,7 +242,7 @@ namespace PokemonCoRNGLibrary.StarterCriteriaLanguage
     public static class StarterCriteriaLanguage
     {
         private readonly static HashSet<char> symbols = new HashSet<char>() { ':', ',', '[', ']', '{', '}' };
-        private readonly static HashSet<char> ignore = new HashSet<char>() { ' ', '\r', '\n' };
+        private readonly static HashSet<char> ignore = new HashSet<char>() { ' ', '\t', '\r', '\n' };
 
         private static IEnumerable<string> ConvertToTokens(string source)
         {
