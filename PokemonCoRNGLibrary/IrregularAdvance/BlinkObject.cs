@@ -5,11 +5,12 @@ using PokemonPRNG.LCG32.GCLCG;
 
 namespace PokemonCoRNGLibrary.IrregularAdvance
 {
-    class BlinkObject
+    public class BlinkObject
     {
         private readonly int coolTime;
         private int remainCoolTime = 0;
         private int blinkCounter;
+        public int Counter { get => blinkCounter; }
 
         public void Initialize(int initialCounter)
         {
