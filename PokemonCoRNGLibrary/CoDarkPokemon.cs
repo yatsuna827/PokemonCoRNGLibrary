@@ -10,7 +10,7 @@ namespace PokemonCoRNGLibrary
     /// <summary>
     /// ダークポケモンの情報をまとめたクラスです. 
     /// </summary>
-    public class CoDarkPokemon : IGeneratable<RNGResult<GCIndividual>>
+    public partial class CoDarkPokemon : IGeneratable<RNGResult<GCIndividual>>
     {
         public readonly GCSlot slot;
         public readonly IReadOnlyList<GCSlot> preGeneratePokemons;
@@ -23,6 +23,11 @@ namespace PokemonCoRNGLibrary
         private CoDarkPokemon(string name, uint lv, GCSlot[] preGenerate)
         {
             slot = new GCSlot(name, lv);
+            preGeneratePokemons = preGenerate;
+        }
+        private CoDarkPokemon(GCSlot slot, GCSlot[] preGenerate)
+        {
+            this.slot = slot;
             preGeneratePokemons = preGenerate;
         }
 
@@ -63,6 +68,10 @@ namespace PokemonCoRNGLibrary
                 }
             }
         }
+    }
+
+    public partial class CoDarkPokemon
+    {
 
         private static readonly IReadOnlyList<CoDarkPokemon> darkPokemonList;
         private static readonly Dictionary<string, CoDarkPokemon> darkPokemonDictionary;
@@ -73,76 +82,94 @@ namespace PokemonCoRNGLibrary
 
         static CoDarkPokemon()
         {
-            var CoList = new List<CoDarkPokemon>();
-            CoList.Add(new CoDarkPokemon("マクノシタ", 30, new GCSlot[] {
-                new GCSlot("ヨマワル", Gender.Male, Nature.Quirky),
-                new GCSlot("イトマル", Gender.Female, Nature.Hardy)
-            }));
-            CoList.Add(new CoDarkPokemon("ベイリーフ", 30));
-            CoList.Add(new CoDarkPokemon("マグマラシ", 30));
-            CoList.Add(new CoDarkPokemon("アリゲイツ", 30));
-            CoList.Add(new CoDarkPokemon("ヨルノズク", 30));
-            CoList.Add(new CoDarkPokemon("モココ", 30));
-            CoList.Add(new CoDarkPokemon("ポポッコ", 30));
-            CoList.Add(new CoDarkPokemon("ヌオー", 30));
-            CoList.Add(new CoDarkPokemon("ムウマ", 30));
-            CoList.Add(new CoDarkPokemon("マグマッグ", 30));
-            CoList.Add(new CoDarkPokemon("オオタチ", 33));
-            CoList.Add(new CoDarkPokemon("ヤンヤンマ", 33));
-            CoList.Add(new CoDarkPokemon("テッポウオ", 20));
-            CoList.Add(new CoDarkPokemon("マンタイン", 33));
-            CoList.Add(new CoDarkPokemon("ハリーセン", 33));
-            CoList.Add(new CoDarkPokemon("アサナン", 33));
-            CoList.Add(new CoDarkPokemon("ノコッチ", 33));
-            CoList.Add(new CoDarkPokemon("チルット", 33));
-            CoList.Add(new CoDarkPokemon("ウソッキー", 35));
-            CoList.Add(new CoDarkPokemon("カポエラー", 38));
-            CoList.Add(new CoDarkPokemon("エンテイ", 40));
-            CoList.Add(new CoDarkPokemon("レディアン", 40));
-            CoList.Add(new CoDarkPokemon("スイクン", 40));
-            CoList.Add(new CoDarkPokemon("グライガー", 43, new GCSlot[] {
-                new GCSlot("ヒメグマ", Gender.Male, Nature.Serious),
-                new GCSlot("プリン", Gender.Female, Nature.Docile),
-                new GCSlot("キノココ", Gender.Male, Nature.Bashful)
-            }));
-            CoList.Add(new CoDarkPokemon("オドシシ", 43));
-            CoList.Add(new CoDarkPokemon("イノムー", 43));
-            CoList.Add(new CoDarkPokemon("ニューラ", 43));
-            CoList.Add(new CoDarkPokemon("エイパム", 43));
-            CoList.Add(new CoDarkPokemon("ヤミカラス", 43, new GCSlot[] {
-                new GCSlot("キバニア", Gender.Male, Nature.Docile),
-                new GCSlot("コノハナ", Gender.Female, Nature.Serious),
-                new GCSlot("デルビル", Gender.Male, Nature.Bashful)
-            }));
-            CoList.Add(new CoDarkPokemon("フォレトス", 43));
-            CoList.Add(new CoDarkPokemon("アリアドス", 43));
-            CoList.Add(new CoDarkPokemon("グランブル", 43));
-            CoList.Add(new CoDarkPokemon("ビブラーバ", 43));
-            CoList.Add(new CoDarkPokemon("ライコウ", 40));
-            CoList.Add(new CoDarkPokemon("キマワリ", 45));
-            CoList.Add(new CoDarkPokemon("デリバード", 45));
-            CoList.Add(new CoDarkPokemon("ヘラクロス", 45, new GCSlot[] {
-                new GCSlot("アメモース", Gender.Male, Nature.Hardy),
-                new GCSlot("アリアドス", Gender.Female, Nature.Hardy),
-            }));
-            CoList.Add(new CoDarkPokemon("エアームド", 47));
-            CoList.Add(new CoDarkPokemon("ミルタンク", 48));
-            CoList.Add(new CoDarkPokemon("アブソル", 48));
-            CoList.Add(new CoDarkPokemon("ヘルガー", 48));
-            CoList.Add(new CoDarkPokemon("トロピウス", 49));
-            CoList.Add(new CoDarkPokemon("メタグロス", 50));
-            CoList.Add(new CoDarkPokemon("バンギラス", 55));
-            CoList.Add(new CoDarkPokemon("ドーブル", 45));
-            CoList.Add(new CoDarkPokemon("リングマ", 45, new GCSlot[] {
-                new GCSlot("ゴーリキー", Gender.Female, Nature.Calm),
-                new GCSlot("ヌマクロー", Gender.Male, Nature.Mild),
-                new GCSlot("ダーテング", Gender.Female, Nature.Gentle)
-            }));
-            CoList.Add(new CoDarkPokemon("ツボツボ", 45));
-            CoList.Add(new CoDarkPokemon("トゲチック", 20));
+            var list = new List<CoDarkPokemon>
+            {
+                new CoDarkPokemon("マクノシタ", 30, new GCSlot[] {
+                    new GCSlot("ヨマワル", Gender.Male, Nature.Quirky),
+                    new GCSlot("イトマル", Gender.Female, Nature.Hardy)
+                }),
+                new CoDarkPokemon("ベイリーフ", 30),
+                new CoDarkPokemon("マグマラシ", 30),
+                new CoDarkPokemon("アリゲイツ", 30),
+                new CoDarkPokemon("ヨルノズク", 30),
+                new CoDarkPokemon("モココ", 30),
+                new CoDarkPokemon("ポポッコ", 30),
+                new CoDarkPokemon("ヌオー", 30),
+                new CoDarkPokemon("ムウマ", 30),
+                new CoDarkPokemon("マグマッグ", 30),
+                new CoDarkPokemon("オオタチ", 33),
+                new CoDarkPokemon("ヤンヤンマ", 33),
+                new CoDarkPokemon("テッポウオ", 20),
+                new CoDarkPokemon("マンタイン", 33),
+                new CoDarkPokemon("ハリーセン", 33),
+                new CoDarkPokemon("アサナン", 33),
+                new CoDarkPokemon("ノコッチ", 33),
+                new CoDarkPokemon("チルット", 33),
+                new CoDarkPokemon("ウソッキー", 35),
+                new CoDarkPokemon("カポエラー", 38),
+                new CoDarkPokemon("エンテイ", 40),
+                new CoDarkPokemon("レディアン", 40),
+                new CoDarkPokemon("スイクン", 40),
+                new CoDarkPokemon("グライガー", 43, new GCSlot[] {
+                    new GCSlot("ヒメグマ", Gender.Male, Nature.Serious),
+                    new GCSlot("プリン", Gender.Female, Nature.Docile),
+                    new GCSlot("キノココ", Gender.Male, Nature.Bashful)
+                }),
+                new CoDarkPokemon("オドシシ", 43),
+                new CoDarkPokemon("イノムー", 43),
+                new CoDarkPokemon("ニューラ", 43),
+                new CoDarkPokemon("エイパム", 43),
+                new CoDarkPokemon("ヤミカラス", 43, new GCSlot[] {
+                    new GCSlot("キバニア", Gender.Male, Nature.Docile),
+                    new GCSlot("コノハナ", Gender.Female, Nature.Serious),
+                    new GCSlot("デルビル", Gender.Male, Nature.Bashful)
+                }),
+                new CoDarkPokemon("フォレトス", 43),
+                new CoDarkPokemon("アリアドス", 43),
+                new CoDarkPokemon("グランブル", 43),
+                new CoDarkPokemon("ビブラーバ", 43),
+                new CoDarkPokemon("ライコウ", 40),
+                new CoDarkPokemon("キマワリ", 45),
+                new CoDarkPokemon("デリバード", 45),
+                new CoDarkPokemon("ヘラクロス", 45, new GCSlot[] {
+                    new GCSlot("アメモース", Gender.Male, Nature.Hardy),
+                    new GCSlot("アリアドス", Gender.Female, Nature.Hardy),
+                }),
+                new CoDarkPokemon("エアームド", 47),
+                new CoDarkPokemon("ミルタンク", 48),
+                new CoDarkPokemon("アブソル", 48),
+                new CoDarkPokemon("ヘルガー", 48),
+                new CoDarkPokemon("トロピウス", 49),
+                new CoDarkPokemon("メタグロス", 50),
+                new CoDarkPokemon("バンギラス", 55),
+                new CoDarkPokemon("ドーブル", 45),
+                new CoDarkPokemon("リングマ", 45, new GCSlot[] {
+                    new GCSlot("ゴーリキー", Gender.Female, Nature.Calm),
+                    new GCSlot("ヌマクロー", Gender.Male, Nature.Mild),
+                    new GCSlot("ダーテング", Gender.Female, Nature.Gentle)
+                }),
+                new CoDarkPokemon("ツボツボ", 45),
+                new CoDarkPokemon("トゲチック", 20),
 
-            darkPokemonList = CoList;
-            darkPokemonDictionary = CoList.ToDictionary(_ => _.slot.Pokemon.Name, _ => _);
+                new CoDarkPokemon(new ExtraGCSlot("トゲピー", 20), new GCSlot[] {
+                    new GCSlot("ヤミラミ", Gender.Male, Nature.Careful),
+                    new GCSlot("ベトベター", Gender.Male, Nature.Impish),
+                    new GCSlot("ゴクリン", Gender.Male, Nature.Quirky)
+                }),
+                new CoDarkPokemon(new ExtraGCSlot("メリープ", 37), new GCSlot[] {
+                    new GCSlot("エネコ", Gender.Female, Nature.Naughty),
+                    new GCSlot("ハリーセン", Gender.Female, Nature.Timid),
+                    new GCSlot("ヨマワル", Gender.Female, Nature.Serious)
+                }),
+                new CoDarkPokemon(new ExtraGCSlot("ハッサム", 50), new GCSlot[] {
+                    new GCSlot("ヤミカラス", Gender.Female, Nature.Jolly),
+                    new GCSlot("ネンドール", Gender.Genderless, Nature.Brave),
+                    new GCSlot("ハガネール", Gender.Male, Nature.Adamant)
+                })
+            };
+
+            darkPokemonList = list;
+            darkPokemonDictionary = list.ToDictionary(_ => _.slot.Pokemon.Name, _ => _);
         }
     }
 }

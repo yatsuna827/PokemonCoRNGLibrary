@@ -14,7 +14,7 @@ namespace PokemonCoRNGLibrary
         public Gender FixedGender { get; }
         public Nature FixedNature { get; }
 
-        public GCIndividual Generate(ref uint seed, uint tsv = 0x10000)
+        public virtual GCIndividual Generate(ref uint seed, uint tsv = 0x10000)
         {
             var rep = seed;
             seed.Advance(2); // dummyPID
@@ -62,5 +62,37 @@ namespace PokemonCoRNGLibrary
             FixedGender = g;
             FixedNature = n;
         }
+    }
+
+    class ExtraGCSlot : GCSlot
+    {
+        public override GCIndividual Generate(ref uint seed, uint tsv = 0x10000)
+        {
+            var rep = seed;
+            seed.Advance(2); // dummyPID
+            seed.GetIVs(); // 生成するだけ。0固定なので。
+            var abilityIndex = seed.GetRand(2);
+            uint pid;
+            bool skip = false;
+            while (true)
+            {
+                pid = (seed.GetRand() << 16) | seed.GetRand();
+                if (FixedGender != Gender.Genderless && pid.GetGender(Pokemon.GenderRatio) != FixedGender)
+                    continue;
+                if (FixedNature != Nature.other && (Nature)(pid % 25) != FixedNature)
+                    continue;
+                if (pid.IsShiny(tsv))
+                {
+                    skip |= true;
+                    continue;
+
+                }
+                break;
+            }
+
+            return Pokemon.GetIndividual(Lv, new uint[6], pid, abilityIndex).SetRepSeed(rep).SetShinySkipped(skip);
+        }
+
+        public ExtraGCSlot(string name, uint lv) : base(name, lv) { }
     }
 }
