@@ -10,7 +10,7 @@ namespace PokemonCoRNGLibrary
     public class CoStarterGenerator : IGeneratable<CoStarterResult>
     {
         private static readonly GCSlot ESPEON = new GCSlot("エーフィ", 25, Gender.Male);
-        private static readonly GCSlot UMBREON = new GCSlot("ブラッキー", 25, Gender.Male);
+        private static readonly GCSlot UMBREON = new GCSlot("ブラッキー", 26, Gender.Male);
 
         public CoStarterResult Generate(uint seed)
         {
