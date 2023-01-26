@@ -215,7 +215,7 @@ namespace PokemonCoRNGLibrary.StarterCriteriaLanguage
 
         public static PokeType TryConvertToPokeType(this string maybeTypeStr)
         {
-            if (!dict_type.TryGetValue(maybeTypeStr, out var type)) return PokeType.Non;
+            if (!dict_type.TryGetValue(maybeTypeStr, out var type)) return PokeType.None;
 
             return type;
         }

@@ -17,7 +17,7 @@ namespace PokemonCoRNGLibrary.Criteria
         public bool CheckConditions(GCIndividual item) => (item.HiddenPowerType & targetType) != 0;
         public HiddenPowerTypeCriteria(params PokeType[] pokeTypes)
         {
-            var t = PokeType.Non;
+            var t = PokeType.None;
             foreach (var type in pokeTypes)
                 t |= type;
 

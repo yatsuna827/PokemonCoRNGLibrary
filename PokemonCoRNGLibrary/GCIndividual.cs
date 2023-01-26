@@ -20,7 +20,7 @@ namespace PokemonCoRNGLibrary
 
         internal GCIndividual(Pokemon.Species species, uint pid, uint[] ivs, uint lv, uint xdability) : base(species, pid, ivs, lv)
         {
-            this.GCAbility = species.Ability[xdability];
+            this.GCAbility = species.Ability[(int)xdability];
         }
     }
     public static class GCExtension

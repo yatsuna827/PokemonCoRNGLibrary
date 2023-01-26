@@ -49,7 +49,7 @@ namespace PokemonCoRNGLibrary.StarterCriteriaLanguage
         private static PokeType ParseType(Value v)
         {
             var type = v.Name.TryConvertToPokeType();
-            if (type == PokeType.Non) throw new Exception("Invalid Value");
+            if (type == PokeType.None) throw new Exception("Invalid Value");
 
             return type;
         }
