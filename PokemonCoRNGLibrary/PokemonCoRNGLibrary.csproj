@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>ポケモンコロシアムの乱数調整用の機能を提供するライブラリです.</Description>
+    <Version>1.4.0</Version>
+    <AssemblyVersion>1.3.3.0</AssemblyVersion>
+    <FileVersion>1.3.3.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Optimize>true</Optimize>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PokemonPRNG" Version="3.4.1" />
+    <PackageReference Include="PokemonStandardLibrary" Version="1.4.0" />
+    <PackageReference Include="PokemonStandardLibrary.Gen3" Version="1.2.0" />
+  </ItemGroup>
+
+</Project>
