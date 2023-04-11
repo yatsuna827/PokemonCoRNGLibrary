@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "ConsoleApp\Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonCoRNGLibrary.StarterCriteriaLanguage", "PokemonCoRNGLibrary.StarterCriteriaLanguage\PokemonCoRNGLibrary.StarterCriteriaLanguage.csproj", "{B19B43E3-A4EA-4F6A-95F2-19FD5048DA30}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{D6B898E5-0BFF-478B-87D7-4A42A76BEF1D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B19B43E3-A4EA-4F6A-95F2-19FD5048DA30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B19B43E3-A4EA-4F6A-95F2-19FD5048DA30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B19B43E3-A4EA-4F6A-95F2-19FD5048DA30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6B898E5-0BFF-478B-87D7-4A42A76BEF1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6B898E5-0BFF-478B-87D7-4A42A76BEF1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6B898E5-0BFF-478B-87D7-4A42A76BEF1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6B898E5-0BFF-478B-87D7-4A42A76BEF1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
