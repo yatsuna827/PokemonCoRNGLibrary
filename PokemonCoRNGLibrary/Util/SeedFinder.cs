@@ -95,53 +95,83 @@ namespace PokemonCoRNGLibrary
             return res.Distinct().Select(_ => seed.NextSeed(_));
         }
 
-        // 戦闘終了のタイミングで特定を行う.
-        // inputがいくつかの瞬きの複合である可能性が高いのでどうしよう.
-        public static IEnumerable<uint> FindCurrentSeedByBlinkInBattle(uint seed, uint minIndex, uint maxIndex, int[] blinkInput, int allowanceLimitOfError = 20, int coolTime = 4)
+        /// <summary>
+        /// 戦闘終了時に瞬きから現在seedを検索し, 条件に一致するものを返します.
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <param name="minIndex"></param>
+        /// <param name="maxIndex"></param>
+        /// <param name="blinkInput"></param>
+        /// <param name="allowanceLimitOfError"></param>
+        /// <param name="coolTime"></param>
+        /// <returns></returns>
+        public static IEnumerable<uint> FindCurrentSeedByBlinkInBattle(uint seed, uint maxFrame, int[] blinkInput, bool enemyBlinking, int allowanceLimitOfError = 20, int coolTime = 4)
         {
-            var res = new List<uint>();
+            var source = seed.EnumerateBlinkingSeedInBattle(coolTime, enemyBlinking).TakeWhile(_ => _.frame <= maxFrame);
+            var timeline = source.Select(_ => _.interval).ToArray();
+            var seeds = source.Select(_ => _.seed).ToArray();
 
-            seed.Advance(minIndex);
-            blinkInput = blinkInput.Select(_ => _ - (5 + coolTime)).ToArray(); // 瞬き後のクールタイム分を引く.
+            return blinkInput.SearchSubArrayWithError(timeline, allowanceLimitOfError).Select(_ => seeds[_ - 1]);
+        }
 
-            var n = maxIndex - minIndex + 1;
-
-            // i = maxまで計算できるように, 全て最大間隔で瞬きが行われた場合でも足りるだけ余分に計算しておく.
-            var len = (int)n + 85 * (blinkInput.Length + 2);
-
-            // 「到達したときに瞬きをするような内部カウンタの値」の最小値に変換する.
-            // UpperBoundしていたところは入力が高々65536通りしかないのであらかじめ計算しておくことでO(1)に落とせる.
-            // とはいえそこまで劇的に変わるわけではない(UpperBoundの計算量は十分定数に近いので).
-            var countList = seed.EnumerateRand().Take(len + 1).Select(_ => minBlinkableBlank[_]).ToArray();
-
-            // 「その位置で瞬きをした場合の, 次の瞬きまでの間隔」.
-            // ここが定数倍大きいのでちょっと辛い.
-            var blankList = Enumerable.Repeat(86, len).ToArray(); // 86 = INF
-            for (int i = len - 1; i >= 0; i--) // 後ろから埋めていく. 確率的にcountListは大きい値が多く, 特に85になる確率が高い.
-                for (int k = countList[i]; k <= Math.Min(i, 85); k++) // kは『到達したときに瞬きするような内部カウンタの最小値』から85まで(境界を超えないように).
-                    blankList[i - k] = Math.Min(blankList[i - k], k); // kの定義より, i-kで瞬きをしたら, 次は少なくともiで瞬きが発生する.
-
-            // 『iフレーム目に1回目の瞬きが行われた』と仮定してシミュレート.
-            for (int i = 0; i < n; i++)
+        /// <summary>
+        /// tl から、連続する和がblanksに一致する部分列 [l_0, r_0), [l_1=r_0, r_1), ..., [l_n, r_n) を探索し、終端のr_0の値を列挙します。
+        /// </summary>
+        /// <param name="blanks"></param>
+        /// <param name="tl"></param>
+        /// <param name="error"></param>
+        /// <returns></returns>
+        private static IEnumerable<int> SearchSubArrayWithError(this int[] blanks, int[] tl, int error)
+        {
+            var ss = tl.ShakutoriWithError(blanks.First(), error).ToArray();
+            var q = new Queue<(int, int)>(ss.Select(_ => (_, 1)));
+            while (q.Count > 0)
             {
-                int idx = i;
-                int k;
-                for (k = 0; k < blinkInput.Length; k++)
-                {
-                    // 許容誤差を超えているなら次のフレームへ.
-                    if ((blinkInput[k] + allowanceLimitOfError) < blankList[idx] || blankList[idx] < (blinkInput[k] - allowanceLimitOfError)) break;
+                var (l, idx) = q.Dequeue();
 
-                    // 間隔ぶんをindexに加算する.
-                    idx += blankList[idx] + 1;
+                var seg = blanks[idx];
+                for (int r = l, sum = 0; r < tl.Length; sum += tl[r++])
+                {
+                    if (seg - error <= sum && sum <= seg + error)
+                    {
+                        if (idx == blanks.Length - 1)
+                            yield return r;
+                        else
+                            q.Enqueue((r, idx + 1));
+                    }
+
+                    if (sum + tl[r] > seg + error) break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// tl から 合計が n ± error になるような半開区間 [l, r) を探索し、r の値を列挙します
+        /// </summary>
+        /// <param name="tl"></param>
+        /// <param name="n"></param>
+        /// <param name="error"></param>
+        /// <returns></returns>
+        private static IEnumerable<int> ShakutoriWithError(this int[] tl, int n, int error)
+        {
+            var r = 0;
+            var sum = 0;
+            for (int i = 0; i < tl.Length; i++)
+            {
+                while (r < tl.Length && sum + tl[r] <= n + error)
+                {
+                    sum += tl[r];
+                    r++;
+
+                    if (n - error <= sum && sum <= n + error) yield return r;
                 }
 
-                // 入力と全て一致すればresに入れる.
-                if (k == blinkInput.Length) res.Add((uint)idx);
+                if (r == i) r++;
+                else sum -= tl[i];
             }
-
-            return res.Distinct().Select(_ => seed.NextSeed(_));
         }
-        
+
+
         /// <summary>
         /// 瞬きから現在seedを検索し, 条件に一致するものを返します.
         /// 省メモリかつ高速ですが, 瞬きを数回捨てる必要があります.
