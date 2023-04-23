@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using PokemonPRNG.LCG32.GCLCG;
+using System.Reflection;
 
 namespace PokemonCoRNGLibrary.IrregularAdvance
 {
@@ -142,6 +143,22 @@ namespace PokemonCoRNGLibrary.IrregularAdvance
         {
             initialSeed = seed;
             Reset();
+        }
+    }
+
+    public class CipherLabB2F : ISeedEnumeratorHandler
+    {
+        private CipherLabCounter _counter;
+
+        public uint SelectCurrent(uint seed) => seed;
+
+        public void MoveNext(ref uint seed) 
+            => _counter.CountUp(ref seed);
+
+        public uint Reset(uint initialSeed)
+        {
+            _counter = new CipherLabCounter();
+            return initialSeed;
         }
     }
 }

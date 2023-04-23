@@ -58,4 +58,21 @@ namespace PokemonCoRNGLibrary.IrregularAdvance
             Reset();
         }
     }
+
+
+    public class OutskirtStand : ISeedEnumeratorHandler
+    {
+        private OutskirtStandCounter _counter;
+
+        public uint SelectCurrent(uint seed) => seed.NextSeed(4);
+
+        public void MoveNext(ref uint seed)
+            => _counter.CountUp(ref seed);
+
+        public uint Reset(uint seed)
+        {
+            _counter = new OutskirtStandCounter(ref seed);
+            return seed;
+        }
+    }
 }

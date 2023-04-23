@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using PokemonPRNG.LCG32.GCLCG;
 
@@ -37,6 +38,34 @@ namespace PokemonCoRNGLibrary.IrregularAdvance
         {
             coolTime = cool;
             Initialize(initCounter);
+        }
+    }
+
+    public class BlinkObjectEnumeratorHanlder : ISeedEnumeratorHandler
+    {
+        private uint _index;
+        private readonly int[] _initialCounterValues;
+        private readonly BlinkObject[] _blinkObjects;
+        public BlinkObjectEnumeratorHanlder(params BlinkObject[] blinkObjects)
+        {
+            _blinkObjects = blinkObjects;
+            _initialCounterValues = blinkObjects.Select(_ => _.Counter).ToArray();
+        }
+
+        public uint SelectCurrent(uint seed) => seed;
+
+        public void MoveNext(ref uint seed)
+        {
+            foreach (var b in _blinkObjects)
+                b.CountUp(ref seed, ref _index);
+        }
+
+        public uint Reset(uint seed)
+        {
+            foreach (var (obj, cnt) in _blinkObjects.Zip(_initialCounterValues, (obj, cnt) => (obj, cnt)))
+                obj.Initialize(cnt);
+
+            return seed;
         }
     }
 }

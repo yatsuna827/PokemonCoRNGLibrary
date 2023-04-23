@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using PokemonPRNG.LCG32.GCLCG;
+using System.Reflection;
 
 namespace PokemonCoRNGLibrary.IrregularAdvance
 {
@@ -243,6 +244,21 @@ namespace PokemonCoRNGLibrary.IrregularAdvance
             initialSeed = seed;
             this.consider4frames = consider4frames;
             Reset();
+        }
+    }
+
+    public class PyriteCave : ISeedEnumeratorHandler
+    {
+        private PyriteCaveCounter _counter;
+        public uint SelectCurrent(uint seed) => _counter.CalcSeedBeforeEntryingBattle(seed);
+
+        public void MoveNext(ref uint seed)
+            => _counter.CountUp(ref seed);
+
+        public uint Reset(uint seed)
+        {
+            _counter = new PyriteCaveCounter();
+            return seed;
         }
     }
 }

@@ -3,11 +3,52 @@ using System.Collections.Generic;
 using System.Text;
 using PokemonPRNG.LCG32.GCLCG;
 using PokemonCoRNGLibrary.IrregularAdvance;
+using System.Collections;
 
 namespace PokemonCoRNGLibrary
 {
-    public static class SeedEnumerator
+    class SeedEnumerator : IEnumerator<uint>
     {
+        private readonly uint _initialSeed;
+        private uint _seed;
+        private readonly ISeedEnumeratorHandler _handler;
+
+        public SeedEnumerator(uint seed, ISeedEnumeratorHandler handler)
+        {
+            _initialSeed = seed;
+            _handler = handler;
+            Reset();
+        }
+
+        public uint Current => _handler.SelectCurrent(_seed);
+
+        object IEnumerator.Current => Current;
+
+        public void Dispose() { }
+
+        public bool MoveNext()
+        {
+            _handler.MoveNext(ref _seed);
+            return true;
+        }
+
+        public void Reset()
+            => _seed = _handler.Reset(_initialSeed);
+    }
+
+    public interface ISeedEnumeratorHandler
+    {
+        uint SelectCurrent(uint seed);
+        void MoveNext(ref uint seed);
+        uint Reset(uint initialValue);
+    }
+
+
+    public static class SeedEnumeratorExtension
+    {
+        public static IEnumerable<uint> EnumerateSeed(this uint seed, ISeedEnumeratorHandler handler)
+            => handler != null ? new SeedEnumerator(seed, handler).EnumerateSeed() : seed.EnumerateSeed();
+
         /// <summary>
         /// 瞬きを行うseedと前回の瞬きからの間隔と消費数のTupleを返し続けます. 
         /// </summary>
@@ -48,12 +89,30 @@ namespace PokemonCoRNGLibrary
             }
         }
 
+        [Obsolete] public static IEnumerable<uint> EnumerateSeedInBattle(this uint seed, int coolTime = 4, bool enemyBlinking = false)
+        {
+            var player = new BlinkObject(10, 10);
+            var enemy = new BlinkObject(10, 10);
+            var obj = new BlinkObject(coolTime, 10);
+            var index = 0u;
+
+            yield return seed;
+            for (var currentFrame = 1; true; currentFrame++)
+            {
+                player.CountUp(ref seed, ref index);
+                if (enemyBlinking) enemy.CountUp(ref seed, ref index);
+                obj.CountUp(ref seed, ref index);
+                yield return seed;
+            }
+        }
+
+
         /// <summary>
         /// 名前入力画面での消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
         /// </summary>
         /// <param name="seed"></param>
         /// <returns></returns>
-        public static IEnumerable<uint> EnumerateSeedAtNamingScreen(this uint seed)
+        [Obsolete] public static IEnumerable<uint> EnumerateSeedAtNamingScreen(this uint seed)
         {
             while (true)
             {
@@ -69,7 +128,8 @@ namespace PokemonCoRNGLibrary
         /// </summary>
         /// <param name="seed"></param>
         /// <returns></returns>
-        public static IEnumerable<uint> EnumerateSnatchListAdvance(this uint seed)
+
+        [Obsolete] public static IEnumerable<uint> EnumerateSnatchListAdvance(this uint seed)
         {
             while (true)
             {
@@ -107,28 +167,28 @@ namespace PokemonCoRNGLibrary
         /// </summary>
         /// <param name="seed"></param>
         /// <returns></returns>
-        public static IEnumerable<uint> EnumerateSeedAtPyriteCave(this uint seed, bool consider4Frames = true) => new PyriteCaveEnumerator(seed, consider4Frames).EnumerateSeed();
+        [Obsolete] public static IEnumerable<uint> EnumerateSeedAtPyriteCave(this uint seed, bool consider4Frames = true) => new PyriteCaveEnumerator(seed, consider4Frames).EnumerateSeed();
 
         /// <summary>
         /// ダークポケモン研究所B1Fの不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
         /// </summary>
         /// <param name="seed"></param>
         /// <returns></returns>
-        public static IEnumerable<uint> EnumerateSeedAtCipherLabB1F(this uint seed) => new VibravaEnumerator(seed).EnumerateSeed();
+        [Obsolete] public static IEnumerable<uint> EnumerateSeedAtCipherLabB1F(this uint seed) => new VibravaEnumerator(seed).EnumerateSeed();
 
         /// <summary>
         /// ダークポケモン研究所B2Fの不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
         /// </summary>
         /// <param name="seed"></param>
         /// <returns></returns>
-        public static IEnumerable<uint> EnumerateSeedAtCipherLabB2F(this uint seed) => new CipherLabEnumerator(seed).EnumerateSeed();
+        [Obsolete] public static IEnumerable<uint> EnumerateSeedAtCipherLabB2F(this uint seed) => new CipherLabEnumerator(seed).EnumerateSeed();
 
         /// <summary>
         /// 町外れのスタンド屋外の不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
         /// </summary>
         /// <param name="seed"></param>
         /// <returns></returns>
-        public static IEnumerable<uint> EnumerateSeedAtOutskirtStand(this uint seed) => new OutskirtStandEnumerator(seed).EnumerateSeed();
+        [Obsolete] public static IEnumerable<uint> EnumerateSeedAtOutskirtStand(this uint seed) => new OutskirtStandEnumerator(seed).EnumerateSeed();
 
     }
 }

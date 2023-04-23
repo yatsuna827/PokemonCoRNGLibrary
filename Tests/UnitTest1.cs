@@ -1,3 +1,6 @@
+using PokemonCoRNGLibrary.IrregularAdvance;
+using PokemonPRNG.LCG32.GCLCG;
+
 namespace Tests
 {
     public class UnitTest1
@@ -58,6 +61,78 @@ namespace Tests
             Assert.True(result.Length > 0);
             Assert.Contains(expected, result);
             Assert.Equal(1, result.Count(_ => _ == expected));
+        }
+    }
+
+    public class UnitTest2
+    {
+        [Fact]
+        public void TestNamingScreen()
+        {
+            var seed = 0xDEADBEEFu;
+
+            var arr1 = seed.EnumerateSeedAtNamingScreen().Take(100).ToArray();
+            var arr2 = seed.EnumerateSeed(new NamingScreen()).Take(100).ToArray();
+
+            Assert.Equal(arr1, arr2);
+        }
+
+        [Fact]
+        public void TestCipherLabB1F()
+        {
+            var seed = 0xDEADBEEFu;
+
+            var arr1 = seed.EnumerateSeedAtCipherLabB1F().Take(100).ToArray();
+            var arr2 = seed.EnumerateSeed(new CipherLabB1F()).Take(100).ToArray();
+
+            Assert.Equal(arr1, arr2);
+        }
+
+        [Fact]
+        public void TestCipherLabB2F()
+        {
+            var seed = 0xDEADBEEFu;
+
+            var arr1 = seed.EnumerateSeedAtCipherLabB2F().Take(100).ToArray();
+            var arr2 = seed.EnumerateSeed(new CipherLabB2F()).Take(100).ToArray();
+
+            Assert.Equal(arr1, arr2);
+        }
+
+        [Fact]
+        public void TestOutskirtStand()
+        {
+            var seed = 0xDEADBEEFu;
+
+            var arr1 = seed.EnumerateSeedAtOutskirtStand().Take(100).ToArray();
+            var arr2 = seed.EnumerateSeed(new OutskirtStand()).Take(100).ToArray();
+
+            Assert.Equal(arr1, arr2);
+        }
+
+        [Fact]
+        public void TestPyriteCave()
+        {
+            var seed = 0xDEADBEEFu;
+
+            var arr1 = seed.EnumerateSeedAtPyriteCave().Take(100).ToArray();
+            var arr2 = seed.EnumerateSeed(new PyriteCave()).Take(100).ToArray();
+
+            Assert.Equal(arr1, arr2);
+        }
+
+        [Fact]
+        public void TestBattleBlink()
+        {
+            var seed = 0xDEADBEEFu;
+
+            var arr1 = seed.EnumerateSeedInBattle(4, false).Take(100).ToArray();
+            var arr2 = seed.EnumerateSeed(new BlinkObjectEnumeratorHanlder(
+                new BlinkObject(10, 10), 
+                new BlinkObject(4, 10)
+            )).Take(100).ToArray();
+
+            Assert.Equal(arr1, arr2);
         }
     }
 

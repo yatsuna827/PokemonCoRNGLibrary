@@ -120,4 +120,20 @@ namespace PokemonCoRNGLibrary.IrregularAdvance
             Reset();
         }
     }
+
+    public class CipherLabB1F : ISeedEnumeratorHandler
+    {
+        private VibravaCounter _counter;
+
+        public uint SelectCurrent(uint seed) => seed;
+
+        public void MoveNext(ref uint seed)
+            => _counter.CountUp(ref seed);
+
+        public uint Reset(uint seed)
+        {
+            _counter = new VibravaCounter(ref seed);
+            return seed;
+        }
+    }
 }
