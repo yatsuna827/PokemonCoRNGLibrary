@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using PokemonPRNG.LCG32.GCLCG;
 
-namespace PokemonCoRNGLibrary.IrregularAdvance
+namespace PokemonCoRNGLibrary.AdvanceSource
 {
     /// <summary>
     /// 町外れのスタンド 屋外の不定消費をエミュレートするクラス. 不定消費の用途は知らない.
@@ -64,14 +64,17 @@ namespace PokemonCoRNGLibrary.IrregularAdvance
     {
         private OutskirtStandCounter _counter;
 
-        public uint SelectCurrent(uint seed) => seed.NextSeed(4);
-
-        public void MoveNext(ref uint seed)
-            => _counter.CountUp(ref seed);
-
-        public uint Reset(uint seed)
+        public uint Initialize(uint seed)
         {
             _counter = new OutskirtStandCounter(ref seed);
+            return seed;
+        }
+
+        public uint SelectCurrent(uint seed) => seed.NextSeed(4);
+
+        public uint Advance(uint seed)
+        {
+            _counter.CountUp(ref seed);
             return seed;
         }
     }

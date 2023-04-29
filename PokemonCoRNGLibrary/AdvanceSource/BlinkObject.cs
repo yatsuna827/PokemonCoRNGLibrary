@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using PokemonPRNG.LCG32.GCLCG;
 
-namespace PokemonCoRNGLibrary.IrregularAdvance
+namespace PokemonCoRNGLibrary.AdvanceSource
 {
     public class BlinkObject
     {
@@ -41,31 +41,54 @@ namespace PokemonCoRNGLibrary.IrregularAdvance
         }
     }
 
-    public class BlinkObjectEnumeratorHanlder : ISeedEnumeratorHandler
+    public class BlinkObjectEnumeratorHanlder : ISeedEnumeratorHandler, IActionSequenceEnumeratorHandler
     {
         private uint _index;
         private readonly int[] _initialCounterValues;
         private readonly BlinkObject[] _blinkObjects;
+        private readonly Func<bool[], bool> _actionSelector;
+
         public BlinkObjectEnumeratorHanlder(params BlinkObject[] blinkObjects)
         {
             _blinkObjects = blinkObjects;
             _initialCounterValues = blinkObjects.Select(_ => _.Counter).ToArray();
+            _actionSelector = (_) => true;
+        }
+        public BlinkObjectEnumeratorHanlder(Func<bool[], bool> actionSelector, params BlinkObject[] blinkObjects)
+        {
+            _blinkObjects = blinkObjects;
+            _initialCounterValues = blinkObjects.Select(_ => _.Counter).ToArray();
+            _actionSelector = actionSelector;
         }
 
         public uint SelectCurrent(uint seed) => seed;
 
-        public void MoveNext(ref uint seed)
+        public uint Advance(uint seed)
         {
-            foreach (var b in _blinkObjects)
-                b.CountUp(ref seed, ref _index);
+            RollForAction(ref seed);
+            return seed;
         }
 
-        public uint Reset(uint seed)
+        public bool RollForAction(ref uint seed)
+        {
+            var actions = new bool[_blinkObjects.Length];
+            for (var i = 0; i < _blinkObjects.Length; i++)
+                actions[i] = _blinkObjects[i].CountUp(ref seed, ref _index);
+
+            return _actionSelector(actions);
+        }
+
+        public uint Initialize(uint seed)
         {
             foreach (var (obj, cnt) in _blinkObjects.Zip(_initialCounterValues, (obj, cnt) => (obj, cnt)))
                 obj.Initialize(cnt);
 
             return seed;
         }
+
+        public static BlinkObjectEnumeratorHanlder ResultScene(BlinkObject pokemon, bool enemyBlinking, int initCounter = 0)
+            => enemyBlinking ?
+                new BlinkObjectEnumeratorHanlder((actions) => actions[2], new BlinkObject(10, initCounter), new BlinkObject(10, initCounter), pokemon) :
+                new BlinkObjectEnumeratorHanlder((actions) => actions[1], new BlinkObject(10, initCounter), pokemon);
     }
 }

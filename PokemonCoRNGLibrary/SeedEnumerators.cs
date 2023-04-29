@@ -2,52 +2,52 @@
 using System.Collections.Generic;
 using System.Text;
 using PokemonPRNG.LCG32.GCLCG;
-using PokemonCoRNGLibrary.IrregularAdvance;
+using PokemonCoRNGLibrary.AdvanceSource;
 using System.Collections;
+using System.Reflection;
 
 namespace PokemonCoRNGLibrary
 {
-    class SeedEnumerator : IEnumerator<uint>
-    {
-        private readonly uint _initialSeed;
-        private uint _seed;
-        private readonly ISeedEnumeratorHandler _handler;
-
-        public SeedEnumerator(uint seed, ISeedEnumeratorHandler handler)
-        {
-            _initialSeed = seed;
-            _handler = handler;
-            Reset();
-        }
-
-        public uint Current => _handler.SelectCurrent(_seed);
-
-        object IEnumerator.Current => Current;
-
-        public void Dispose() { }
-
-        public bool MoveNext()
-        {
-            _handler.MoveNext(ref _seed);
-            return true;
-        }
-
-        public void Reset()
-            => _seed = _handler.Reset(_initialSeed);
-    }
-
     public interface ISeedEnumeratorHandler
     {
+        uint Initialize(uint seed);
         uint SelectCurrent(uint seed);
-        void MoveNext(ref uint seed);
-        uint Reset(uint initialValue);
+        uint Advance(uint seed);
     }
-
+    public interface IActionSequenceEnumeratorHandler
+    {
+        uint Initialize(uint seed);
+        uint SelectCurrent(uint seed);
+        bool RollForAction(ref uint seed);
+    }
 
     public static class SeedEnumeratorExtension
     {
         public static IEnumerable<uint> EnumerateSeed(this uint seed, ISeedEnumeratorHandler handler)
-            => handler != null ? new SeedEnumerator(seed, handler).EnumerateSeed() : seed.EnumerateSeed();
+        {
+            seed = handler.Initialize(seed);
+            while (true)
+            {
+                yield return handler.SelectCurrent(seed);
+                seed = handler.Advance(seed);
+            }
+        }
+        public static IEnumerable<(uint Seed, int Frame, int Interval)> EnumerateActionSequence(this uint seed, IActionSequenceEnumeratorHandler handler)
+        {
+            var lastBlinkedFrame = 0;
+            var currentFrame = 0;
+
+            seed = handler.Initialize(seed);
+            while (true)
+            {
+                currentFrame++;
+                if (handler.RollForAction(ref seed))
+                {
+                    yield return (handler.SelectCurrent(seed), currentFrame, currentFrame - lastBlinkedFrame);
+                    lastBlinkedFrame = currentFrame;
+                }
+            }
+        }
 
         /// <summary>
         /// 瞬きを行うseedと前回の瞬きからの間隔と消費数のTupleを返し続けます. 
@@ -62,7 +62,6 @@ namespace PokemonCoRNGLibrary
             uint index = 0;
             for (var currentFrame = 1; true; currentFrame++)
             {
-                if (index == 0xFFFFFFFF) yield break;
                 if (obj.CountUp(ref seed, ref index))
                 {
                     yield return (seed, currentFrame - lastBlinkedFrame, currentFrame, index);
@@ -106,7 +105,6 @@ namespace PokemonCoRNGLibrary
             }
         }
 
-
         /// <summary>
         /// 名前入力画面での消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
         /// </summary>
@@ -128,7 +126,6 @@ namespace PokemonCoRNGLibrary
         /// </summary>
         /// <param name="seed"></param>
         /// <returns></returns>
-
         [Obsolete] public static IEnumerable<uint> EnumerateSnatchListAdvance(this uint seed)
         {
             while (true)

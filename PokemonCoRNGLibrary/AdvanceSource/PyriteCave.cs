@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using PokemonPRNG.LCG32.GCLCG;
 using System.Reflection;
 
-namespace PokemonCoRNGLibrary.IrregularAdvance
+namespace PokemonCoRNGLibrary.AdvanceSource
 {
     /// <summary>
     /// パイラの洞窟にある3台のマシンの煙による不定消費をエミュレートするクラス.
@@ -250,14 +250,18 @@ namespace PokemonCoRNGLibrary.IrregularAdvance
     public class PyriteCave : ISeedEnumeratorHandler
     {
         private PyriteCaveCounter _counter;
-        public uint SelectCurrent(uint seed) => _counter.CalcSeedBeforeEntryingBattle(seed);
 
-        public void MoveNext(ref uint seed)
-            => _counter.CountUp(ref seed);
-
-        public uint Reset(uint seed)
+        public uint Initialize(uint seed)
         {
             _counter = new PyriteCaveCounter();
+            return seed;
+        }
+
+        public uint SelectCurrent(uint seed) => _counter.CalcSeedBeforeEntryingBattle(seed);
+
+        public uint Advance(uint seed)
+        {
+            _counter.CountUp(ref seed);
             return seed;
         }
     }

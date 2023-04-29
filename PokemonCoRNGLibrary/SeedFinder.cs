@@ -106,11 +106,11 @@ namespace PokemonCoRNGLibrary
         /// <param name="allowanceLimitOfError"></param>
         /// <param name="coolTime"></param>
         /// <returns></returns>
-        public static IEnumerable<uint> FindCurrentSeedByBlinkInBattle(uint seed, uint maxFrame, int[] blinkInput, bool enemyBlinking, int allowanceLimitOfError = 20, int coolTime = 4)
+        public static IEnumerable<uint> FindCurrentSeedByBlinkInBattle(uint seed, uint maxFrame, int[] blinkInput, IActionSequenceEnumeratorHandler handler, int allowanceLimitOfError = 20)
         {
-            var source = seed.EnumerateBlinkingSeedInBattle(coolTime, enemyBlinking).TakeWhile(_ => _.frame <= maxFrame);
-            var timeline = source.Select(_ => _.interval).ToArray();
-            var seeds = source.Select(_ => _.seed).ToArray();
+            var source = seed.EnumerateActionSequence(handler).TakeWhile(_ => _.Frame <= maxFrame);
+            var timeline = source.Select(_ => _.Interval).ToArray();
+            var seeds = source.Select(_ => _.Seed).ToArray();
 
             return blinkInput.SearchSubArrayWithError(timeline, allowanceLimitOfError).Distinct().Select(_ => seeds[_ - 1]);
         }

@@ -2,9 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using PokemonPRNG.LCG32.GCLCG;
-using System.Reflection;
 
-namespace PokemonCoRNGLibrary.IrregularAdvance
+namespace PokemonCoRNGLibrary.AdvanceSource
 {
     /// <summary>
     /// ボルグのフロアにある4台の泡発生マシンによる不定消費をエミュレートするクラス.
@@ -150,15 +149,18 @@ namespace PokemonCoRNGLibrary.IrregularAdvance
     {
         private CipherLabCounter _counter;
 
-        public uint SelectCurrent(uint seed) => seed;
-
-        public void MoveNext(ref uint seed) 
-            => _counter.CountUp(ref seed);
-
-        public uint Reset(uint initialSeed)
+        public uint Initialize(uint initialSeed)
         {
             _counter = new CipherLabCounter();
             return initialSeed;
+        }
+
+        public uint SelectCurrent(uint seed) => seed;
+
+        public uint Advance(uint seed)
+        {
+            _counter.CountUp(ref seed);
+            return seed;
         }
     }
 }

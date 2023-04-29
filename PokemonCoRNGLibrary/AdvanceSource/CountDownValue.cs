@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PokemonCoRNGLibrary.IrregularAdvance
+namespace PokemonCoRNGLibrary.AdvanceSource
 {
     class CountDownValue
     {

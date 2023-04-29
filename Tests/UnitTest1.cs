@@ -1,4 +1,4 @@
-using PokemonCoRNGLibrary.IrregularAdvance;
+using PokemonCoRNGLibrary.AdvanceSource;
 using PokemonPRNG.LCG32.GCLCG;
 
 namespace Tests
@@ -41,7 +41,8 @@ namespace Tests
             // コーナーケースを組み立てるのが大変なので…。
             var randomized = blanks.Randomize(20);
 
-            var result = SeedFinder.FindCurrentSeedByBlinkInBattle(seed, 500000, randomized, false, 20).ToArray();
+            var handler = BlinkObjectEnumeratorHanlder.ResultScene(new BlinkObject(4), enemyBlinking: false);
+            var result = SeedFinder.FindCurrentSeedByBlinkInBattle(seed, 500000, randomized, handler, 20).ToArray();
 
             Assert.True(result.Length > 0);
             Assert.Contains(expected, result);
@@ -56,7 +57,8 @@ namespace Tests
             // コーナーケースを組み立てるのが大変なので…。
             var randomized = blanks.Randomize(20);
 
-            var result = SeedFinder.FindCurrentSeedByBlinkInBattle(seed, 500000, randomized, true, 20).ToArray();
+            var handler = BlinkObjectEnumeratorHanlder.ResultScene(new BlinkObject(4), enemyBlinking: true);
+            var result = SeedFinder.FindCurrentSeedByBlinkInBattle(seed, 500000, randomized, handler, 20).ToArray();
 
             Assert.True(result.Length > 0);
             Assert.Contains(expected, result);

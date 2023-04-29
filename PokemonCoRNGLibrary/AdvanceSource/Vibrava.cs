@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using PokemonPRNG.LCG32.GCLCG;
 
-namespace PokemonCoRNGLibrary.IrregularAdvance
+namespace PokemonCoRNGLibrary.AdvanceSource
 {
     /// <summary>
     /// ダークポケモン研究所B1Fにある8台の泡発生マシンによる不定消費をエミュレートするクラス.
@@ -125,14 +125,17 @@ namespace PokemonCoRNGLibrary.IrregularAdvance
     {
         private VibravaCounter _counter;
 
-        public uint SelectCurrent(uint seed) => seed;
-
-        public void MoveNext(ref uint seed)
-            => _counter.CountUp(ref seed);
-
-        public uint Reset(uint seed)
+        public uint Initialize(uint seed)
         {
             _counter = new VibravaCounter(ref seed);
+            return seed;
+        }
+
+        public uint SelectCurrent(uint seed) => seed;
+
+        public uint Advance(uint seed)
+        {
+            _counter.CountUp(ref seed);
             return seed;
         }
     }
