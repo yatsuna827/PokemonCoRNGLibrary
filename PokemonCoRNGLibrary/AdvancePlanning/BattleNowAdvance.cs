@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using PokemonPRNG.LCG32.GCLCG;
+using PokemonStandardLibrary.Gen3;
+using PokemonStandardLibrary;
 
 namespace PokemonCoRNGLibrary
 {
@@ -103,4 +105,5 @@ namespace PokemonCoRNGLibrary
         }
 
     }
+
 }
