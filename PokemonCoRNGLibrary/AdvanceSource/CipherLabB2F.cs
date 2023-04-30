@@ -9,12 +9,12 @@ namespace PokemonCoRNGLibrary.AdvanceSource
     /// <summary>
     /// ダークポケモン研究所B1Fにある8台の泡発生マシンによる不定消費をエミュレートするクラス.
     /// </summary>
-    class VibravaCounter
+    class CipherLabB2FCounter
     {
         private readonly MapObjectCounter root;
         private readonly Queue<CountDownValue> lazyGenerators;
 
-        public VibravaCounter(ref uint seed)
+        public CipherLabB2FCounter(ref uint seed)
         {
             lazyGenerators = new Queue<CountDownValue>();
 
@@ -87,7 +87,6 @@ namespace PokemonCoRNGLibrary.AdvanceSource
         }
     }
 
-
     /// <summary>
     /// seedの列挙をサポートするクラス.
     /// </summary>
@@ -108,12 +107,12 @@ namespace PokemonCoRNGLibrary.AdvanceSource
         public void Reset()
         {
             seed = initialSeed;
-            counter = new VibravaCounter(ref seed);
+            counter = new CipherLabB2FCounter(ref seed);
         }
 
         private readonly uint initialSeed;
         private uint seed;
-        private VibravaCounter counter;
+        private CipherLabB2FCounter counter;
         public VibravaEnumerator(uint seed)
         {
             initialSeed = seed;
@@ -121,13 +120,13 @@ namespace PokemonCoRNGLibrary.AdvanceSource
         }
     }
 
-    public class CipherLabB1F : ISeedEnumeratorHandler
+    public class CipherLabB2F : ISeedEnumeratorHandler
     {
-        private VibravaCounter _counter;
+        private CipherLabB2FCounter _counter;
 
         public uint Initialize(uint seed)
         {
-            _counter = new VibravaCounter(ref seed);
+            _counter = new CipherLabB2FCounter(ref seed);
             return seed;
         }
 

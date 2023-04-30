@@ -85,7 +85,7 @@ namespace Tests
             var seed = 0xDEADBEEFu;
 
             var arr1 = seed.EnumerateSeedAtCipherLabB1F().Take(100).ToArray();
-            var arr2 = seed.EnumerateSeed(new CipherLabB1F()).Take(100).ToArray();
+            var arr2 = seed.EnumerateSeed(new CipherLabB2F()).Take(100).ToArray();
 
             Assert.Equal(arr1, arr2);
         }
@@ -96,7 +96,7 @@ namespace Tests
             var seed = 0xDEADBEEFu;
 
             var arr1 = seed.EnumerateSeedAtCipherLabB2F().Take(100).ToArray();
-            var arr2 = seed.EnumerateSeed(new CipherLabB2F()).Take(100).ToArray();
+            var arr2 = seed.EnumerateSeed(new CipherLabB3F()).Take(100).ToArray();
 
             Assert.Equal(arr1, arr2);
         }

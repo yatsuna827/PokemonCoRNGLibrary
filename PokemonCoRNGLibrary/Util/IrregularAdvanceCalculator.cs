@@ -44,7 +44,7 @@ namespace PokemonCoRNGLibrary
                 .SkipWhile(_ => minBlinkFrame <= _.frame)
                 .TakeWhile(_ => _.frame <= maxBlinkFrame)
                 .Where(_ => minInterval <= _.interval))
-                foreach (var res in seed.EnumerateSeed(new CipherLabB1F()).WithIndex()
+                foreach (var res in seed.EnumerateSeed(new CipherLabB2F()).WithIndex()
                     .Skip(minFrame).Take(maxFrame - minFrame + 1)
                     .Where(_ => _.element == targetSeed).Select(_ => ((frame, seed), (_.index, _.element))))
                     yield return res;
@@ -56,7 +56,7 @@ namespace PokemonCoRNGLibrary
                 .SkipWhile(_ => minBlinkFrame <= _.frame)
                 .TakeWhile(_ => _.frame <= maxBlinkFrame)
                 .Where(_ => minInterval <= _.interval)) 
-                    foreach (var res in seed.EnumerateSeed(new CipherLabB2F()).WithIndex()
+                    foreach (var res in seed.EnumerateSeed(new CipherLabB3F()).WithIndex()
                         .Skip(minFrame).Take(maxFrame - minFrame + 1)
                         .Where(_ => _.element == targetSeed).Select(_ => ((frame, seed), (_.index, _.element))))
                             yield return res;

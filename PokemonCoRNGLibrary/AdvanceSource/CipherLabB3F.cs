@@ -8,10 +8,10 @@ namespace PokemonCoRNGLibrary.AdvanceSource
     /// <summary>
     /// ボルグのフロアにある4台の泡発生マシンによる不定消費をエミュレートするクラス.
     /// </summary>
-    class CipherLabCounter
+    class CipherLabB3FCounter
     {
         readonly MainCounter[] mainCounters;
-        public CipherLabCounter()
+        public CipherLabB3FCounter()
         {
             mainCounters = new MainCounter[4]
             {
@@ -132,12 +132,12 @@ namespace PokemonCoRNGLibrary.AdvanceSource
         public void Reset()
         {
             seed = initialSeed;
-            counter = new CipherLabCounter();
+            counter = new CipherLabB3FCounter();
         }
 
         private readonly uint initialSeed;
         private uint seed;
-        private CipherLabCounter counter;
+        private CipherLabB3FCounter counter;
         public CipherLabEnumerator(uint seed)
         {
             initialSeed = seed;
@@ -145,13 +145,13 @@ namespace PokemonCoRNGLibrary.AdvanceSource
         }
     }
 
-    public class CipherLabB2F : ISeedEnumeratorHandler
+    public class CipherLabB3F : ISeedEnumeratorHandler
     {
-        private CipherLabCounter _counter;
+        private CipherLabB3FCounter _counter;
 
         public uint Initialize(uint initialSeed)
         {
-            _counter = new CipherLabCounter();
+            _counter = new CipherLabB3FCounter();
             return initialSeed;
         }
 
