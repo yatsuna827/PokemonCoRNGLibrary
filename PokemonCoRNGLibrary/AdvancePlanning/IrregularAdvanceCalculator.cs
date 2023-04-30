@@ -38,6 +38,8 @@ namespace PokemonCoRNGLibrary
                     yield return res;
             }
         }
+
+        [Obsolete]
         public static IEnumerable<((int frame, uint seed) blink, (int frame, uint seed) bubble)> CalcBlinkAndVibravaFrame(uint currentSeed, uint targetSeed, uint minInterval, int minBlinkFrame, int maxBlinkFrame, int minFrame, int maxFrame, int blinkCool = 4)
         {
             foreach (var (seed, interval, frame, _) in currentSeed.EnumerateBlinkingSeed(blinkCool)
@@ -49,7 +51,7 @@ namespace PokemonCoRNGLibrary
                     .Where(_ => _.element == targetSeed).Select(_ => ((frame, seed), (_.index, _.element))))
                     yield return res;
         }
-
+        [Obsolete]
         public static IEnumerable<((int frame, uint seed) blink, (int frame, uint seed) bubble)> CalcBlinkAndBubbleFrame(uint currentSeed, uint targetSeed, uint minInterval, int minBlinkFrame, int maxBlinkFrame, int minFrame, int maxFrame, int blinkCool = 4)
         {
             foreach (var (seed, interval, frame, _) in currentSeed.EnumerateBlinkingSeed(blinkCool)
@@ -61,6 +63,7 @@ namespace PokemonCoRNGLibrary
                         .Where(_ => _.element == targetSeed).Select(_ => ((frame, seed), (_.index, _.element))))
                             yield return res;
         }
+        [Obsolete]
         public static IEnumerable<((int frame, uint seed) blink, (int frame, uint seed) stand)> CalcBlinkAndStandFrame(uint currentSeed, uint targetSeed, uint minInterval, int minBlinkFrame, int maxBlinkFrame, int minFrame, int maxFrame, int blinkCool = 4)
         {
             foreach (var (seed, interval, frame, _) in currentSeed.EnumerateBlinkingSeed(blinkCool)
@@ -72,6 +75,7 @@ namespace PokemonCoRNGLibrary
                     .Where(_ => _.element == targetSeed).Select(_ => ((frame, seed), (_.index, _.element))))
                     yield return res;
         }
+        [Obsolete]
         public static IEnumerable<((int frame, uint seed) blink, (int frame, uint seed) stand)> CalcBlinkAndSmokeFrame(uint currentSeed, uint targetSeed, uint minInterval, int minBlinkFrame, int maxBlinkFrame, int minFrame, int maxFrame, int blinkCool = 4)
         {
             foreach (var (seed, interval, frame, _) in currentSeed.EnumerateBlinkingSeed(blinkCool)
@@ -83,5 +87,6 @@ namespace PokemonCoRNGLibrary
                     .Where(_ => _.element == targetSeed).Select(_ => ((frame, seed), (_.index, _.element))))
                     yield return res;
         }
+    
     }
 }

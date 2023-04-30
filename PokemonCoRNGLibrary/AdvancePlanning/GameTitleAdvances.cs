@@ -73,7 +73,7 @@ namespace PokemonCoRNGLibrary
         /// <param name="seed"></param>
         /// <param name="finSeed"></param>
         /// <returns></returns>
-        public static uint GenerateDummyParty(this uint seed)
+        public static uint GenerateDummyTeam(this uint seed)
         {
             seed.Advance(118);
             foreach(var team in dummyTeam)
@@ -81,7 +81,6 @@ namespace PokemonCoRNGLibrary
                 seed.Advance(2); // tsv生成されてるけど色回避判定は無いらしい？
                 foreach (var poke in team)
                     poke.Generate(ref seed);
-                
             }
             seed.Advance(7); // 完全に条件無しのダミーの生成
 

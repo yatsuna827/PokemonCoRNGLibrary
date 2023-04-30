@@ -1,4 +1,5 @@
 using PokemonCoRNGLibrary.AdvanceSource;
+using PokemonCoRNGLibrary.AdvancePlanning;
 using PokemonPRNG.LCG32.GCLCG;
 
 namespace Tests
@@ -135,6 +136,85 @@ namespace Tests
             )).Take(100).ToArray();
 
             Assert.Equal(arr1, arr2);
+        }
+
+        [Fact]
+        public void TestBlinkSequence()
+        {
+            var seed = 0xCAFEBEEF;
+
+            var arr1 = seed.EnumerateBlinkingSeed(4).Take(1000).Select(_ => (_.seed, _.frame, _.interval)).ToArray();
+            var arr2 = seed.EnumerateActionSequence(new BlinkObjectEnumeratorHanlder(new BlinkObject(4))).Take(1000).ToArray();
+
+            Assert.Equal(arr1, arr2);
+        }
+
+        [Fact]
+        public void TestCipherLabB2FIrregularAdvance()
+        {
+            var seed = 0xE6C6E208u;
+            var target = 0xB27AE396u;
+
+            var a = IrregularAdvanceCalculator.CalcBlinkAndVibravaFrame(seed, target, 50, 1800, 20000, 300, 700);
+            var b = new BlinkAdvancePlanner(new BlinkObject(4), new CipherLabB2F())
+                .CalculatePlanning(seed, target, 50, 1800, 20000, 300, 700);
+
+            Assert.True(a.Any());
+            Assert.Equal(a.ToArray(), b.ToArray());
+        }
+        [Fact]
+        public void TestCipherLabB3FIrregularAdvance()
+        {
+            var seed = 0xE6C6E208u;
+            var target = 0xB27AE396u;
+
+            var a = IrregularAdvanceCalculator.CalcBlinkAndBubbleFrame(seed, target, 94, 1800, 20000, 300, 700);
+            var b = new BlinkAdvancePlanner(new BlinkObject(4), new CipherLabB3F())
+                .CalculatePlanning(seed, target, 94, 1800, 20000, 300, 700);
+
+            Assert.True(a.Any());
+            Assert.Equal(a.ToArray(), b.ToArray());
+        }
+        [Fact]
+        public void TestPyriteCaveIrregularAdvance()
+        {
+            var seed = 0xE6C6E208u;
+            var target = 0xB27AE396u;
+
+            var a = IrregularAdvanceCalculator.CalcBlinkAndSmokeFrame(seed, target, 94, 1800, 20000, 300, 700);
+            var b = new BlinkAdvancePlanner(new BlinkObject(4), new PyriteCave())
+                .CalculatePlanning(seed, target, 94, 1800, 20000, 300, 700);
+
+            Assert.True(a.Any());
+            Assert.Equal(a.ToArray(), b.ToArray());
+        }
+        [Fact]
+        public void TestOutskirtStandIrregularAdvance()
+        {
+            var seed = 0xE6C6E208u;
+            var target = 0xB27AE396u;
+
+            var a = IrregularAdvanceCalculator.CalcBlinkAndStandFrame(seed, target, 94, 1800, 20000, 300, 700);
+            var b = new BlinkAdvancePlanner(new BlinkObject(4), new OutskirtStand())
+                .CalculatePlanning(seed, target, 94, 1800, 20000, 300, 700);
+
+            Assert.True(a.Any());
+            Assert.Equal(a.ToArray(), b.ToArray());
+        }
+
+        [Fact]
+        public void TestBlinkAdvancePlanner()
+        {
+            var seed = 0xE6C6E208u;
+            var target = 0xB27AE396u;
+
+            var planner = new BlinkAdvancePlanner(new BlinkObject(4), new CipherLabB2F());
+
+            var a = planner.CalculatePlanning(seed, target, 50, 1800, 20000, 300, 700);
+            var b = planner.CalculatePlanning(seed, target, 50, 1800, 20000, 300, 700);
+
+            Assert.True(a.Any());
+            Assert.Equal(a.ToArray(), b.ToArray());
         }
     }
 

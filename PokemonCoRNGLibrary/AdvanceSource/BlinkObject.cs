@@ -52,7 +52,7 @@ namespace PokemonCoRNGLibrary.AdvanceSource
         {
             _blinkObjects = blinkObjects;
             _initialCounterValues = blinkObjects.Select(_ => _.Counter).ToArray();
-            _actionSelector = (_) => true;
+            _actionSelector = (_) => _[0];
         }
         public BlinkObjectEnumeratorHanlder(Func<bool[], bool> actionSelector, params BlinkObject[] blinkObjects)
         {

@@ -14,7 +14,7 @@ namespace PokemonCoRNGLibrary
     {
         public static class SingleBattle
         {
-            public static readonly RentalPartyRank Ultimate = new RentalPartyRank("シングル最強", new GCSlot[][]
+            public static readonly RentalTeamRank Ultimate = new RentalTeamRank("シングル最強", new GCSlot[][]
             {
                 new GCSlot[] {
                     new GCSlot("バシャーモ", Gender.Male, Nature.Sassy),
@@ -81,7 +81,7 @@ namespace PokemonCoRNGLibrary
                     new GCSlot("ヤミラミ", Gender.Male, Nature.Adamant),
                 }
             });
-            public static readonly RentalPartyRank Hard = new RentalPartyRank("シングル強い", new GCSlot[][]
+            public static readonly RentalTeamRank Hard = new RentalTeamRank("シングル強い", new GCSlot[][]
             {
                 new GCSlot[] {
                     new GCSlot("バクーダ", Gender.Male, Nature.Impish),
@@ -148,7 +148,7 @@ namespace PokemonCoRNGLibrary
                     new GCSlot("ノクタス", Gender.Female, Nature.Careful),
                 },
             });
-            public static readonly RentalPartyRank Normal = new RentalPartyRank("シングル普通", new GCSlot[][]
+            public static readonly RentalTeamRank Normal = new RentalTeamRank("シングル普通", new GCSlot[][]
             {
                 new GCSlot[]
                 {
@@ -223,7 +223,7 @@ namespace PokemonCoRNGLibrary
                     new GCSlot("グラエナ", Gender.Male, Nature.Docile),
                 }
             });
-            public static readonly RentalPartyRank Easy = new RentalPartyRank("シングル弱い", new GCSlot[][]
+            public static readonly RentalTeamRank Easy = new RentalTeamRank("シングル弱い", new GCSlot[][]
             {
                 new GCSlot[] {
                     new GCSlot("ピチュー", Gender.Male, Nature.Impish),
@@ -293,7 +293,7 @@ namespace PokemonCoRNGLibrary
         }
         public static class DoubleBattle
         {
-            public static readonly RentalPartyRank Ultimate = new RentalPartyRank("ダブル最強", new GCSlot[][]
+            public static readonly RentalTeamRank Ultimate = new RentalTeamRank("ダブル最強", new GCSlot[][]
             {
                 new GCSlot[] {
                     new GCSlot("ヘラクロス", Gender.Male, Nature.Careful),
@@ -360,7 +360,7 @@ namespace PokemonCoRNGLibrary
                     new GCSlot("ボーマンダ", Gender.Male, Nature.Jolly),
                 },
             });
-            public static readonly RentalPartyRank Hard = new RentalPartyRank("ダブル強い", new GCSlot[][]
+            public static readonly RentalTeamRank Hard = new RentalTeamRank("ダブル強い", new GCSlot[][]
             {
                 new GCSlot[] {
                     new GCSlot("ムウマ", Gender.Female, Nature.Jolly),
@@ -427,7 +427,7 @@ namespace PokemonCoRNGLibrary
                     new GCSlot("プクリン", Gender.Female, Nature.Careful),
                 },
             });
-            public static readonly RentalPartyRank Normal = new RentalPartyRank("ダブル普通", new GCSlot[][]
+            public static readonly RentalTeamRank Normal = new RentalTeamRank("ダブル普通", new GCSlot[][]
             {
                 new GCSlot[] {
                     new GCSlot("ピカチュウ", Gender.Female, Nature.Hardy),
@@ -494,7 +494,7 @@ namespace PokemonCoRNGLibrary
                     new GCSlot("エネコロロ", Gender.Male, Nature.Jolly),
                 },
             });
-            public static readonly RentalPartyRank Easy = new RentalPartyRank("ダブル弱い", new GCSlot[][]
+            public static readonly RentalTeamRank Easy = new RentalTeamRank("ダブル弱い", new GCSlot[][]
             {
                 new GCSlot[] {
                     new GCSlot("ポチエナ", Gender.Male, Nature.Naughty),
@@ -563,7 +563,7 @@ namespace PokemonCoRNGLibrary
             });
         }
     }
-    public class RentalPartyRank : IGeneratable<RentalBattleResult>
+    public class RentalTeamRank : IGeneratable<RentalBattleResult>
     {
         public string RuleName { get; }
 
@@ -629,13 +629,13 @@ namespace PokemonCoRNGLibrary
             return seed;
         }
 
-        internal RentalPartyRank(string label, GCSlot[][] p)
+        internal RentalTeamRank(string label, GCSlot[][] p)
         {
             RuleName = label;
             teams = p;
         }
     }
-    public readonly struct RentalBattleResult
+    public class RentalBattleResult
     {
         public uint HeadSeed { get; }
         public uint TailSeed { get; }

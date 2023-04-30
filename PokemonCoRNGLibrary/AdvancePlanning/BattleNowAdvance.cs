@@ -57,7 +57,7 @@ namespace PokemonCoRNGLibrary
             return (count, seed);
         }
 
-        private readonly static RentalPartyRank[] rules = new RentalPartyRank[]
+        private readonly static RentalTeamRank[] rules = new RentalTeamRank[]
         {
             BattleNow.SingleBattle.Ultimate,
             BattleNow.SingleBattle.Hard,

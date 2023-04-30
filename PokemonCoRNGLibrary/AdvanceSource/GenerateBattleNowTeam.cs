@@ -6,8 +6,8 @@ namespace PokemonCoRNGLibrary.AdvanceSource
 {
     public class GenerateBattleNowTeam : ISeedEnumeratorHandler
     {
-        private readonly RentalPartyRank _rank;
-        public GenerateBattleNowTeam(RentalPartyRank rank) => _rank = rank;
+        private readonly RentalTeamRank _rank;
+        public GenerateBattleNowTeam(RentalTeamRank rank) => _rank = rank;
 
         public uint Advance(uint seed)
             => _rank.AdvanceSeed(seed);
