@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PokemonCoRNGLibrary.Algorithm
 {
-    public static class Algorithms
+    public static class SearchSubArray
     {
         /// <summary>
         /// tl から、連続する和がblanksに一致する部分列 [l_0, r_0), [l_1=r_0, r_1), ..., [l_n, r_n) を探索し、終端のr_0の値を列挙します。

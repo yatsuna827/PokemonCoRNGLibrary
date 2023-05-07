@@ -9,19 +9,21 @@ namespace PokemonCoRNGLibrary
 {
     public class CoStarterGenerator : IGeneratable<CoStarterResult>
     {
-        private static readonly GCSlot ESPEON = new GCSlot("エーフィ", 25, Gender.Male);
-        private static readonly GCSlot UMBREON = new GCSlot("ブラッキー", 26, Gender.Male);
+        private static readonly IGeneratableEffectful<GCIndividual, uint> ESPEON 
+            = new GenderFixedSlot("エーフィ", 25, Gender.Male);
+        private static readonly IGeneratableEffectful<GCIndividual, uint> UMBREON 
+            = new GenderFixedSlot("ブラッキー", 26, Gender.Male);
 
         public CoStarterResult Generate(uint seed)
         {
             var head = seed;
             seed.Advance1000();
-            uint TID = seed.GetRand();
-            uint SID = seed.GetRand();
-            var u = UMBREON.Generate(ref seed, TID ^ SID);
-            var e = ESPEON.Generate(ref seed, TID ^ SID);
+            var tid = seed.GetRand();
+            var sid = seed.GetRand();
+            var u = seed.Generate(UMBREON, tid ^ sid);
+            var e = seed.Generate(ESPEON, tid ^ sid);
 
-            return new CoStarterResult(head, TID, SID, e, u);
+            return new CoStarterResult(head, tid, sid, e, u);
         }
 
         // なんでもワンライナーにすればいいってもんじゃない.

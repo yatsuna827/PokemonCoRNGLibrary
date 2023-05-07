@@ -33,7 +33,7 @@ namespace PokemonCoRNGLibrary.AdvancePlanning
                     _.Seed.EnumerateSeed(_handler).WithIndex()
                         .Skip(minFrames)
                         .Take(maxFrames - minFrames + 1)
-                        .Where(__ => __.element == target)
+                        .Where(__ => __.Element == target)
                         .Select(__ => ((_.Frame, _.Seed), __))
                 );
     }

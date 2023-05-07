@@ -6,91 +6,127 @@ using PokemonStandardLibrary.Gen3;
 
 namespace PokemonCoRNGLibrary
 {
-    // 生成可能な個体の最低限の情報をまとめたクラス.
-    public class GCSlot : ISideEffectiveGeneratable<GCIndividual, uint>
+    public class GCSlot : IGeneratable<GCIndividual, uint>, IGeneratableEffectful<GCIndividual, uint>, ILcgUser<uint>
     {
         public uint Lv { get; }
-        public Pokemon.Species Pokemon { get; }
-        public Gender FixedGender { get; }
-        public Nature FixedNature { get; }
+        public Pokemon.Species Species { get; }
 
-        public virtual GCIndividual Generate(ref uint seed, uint tsv = 0x10000)
+        public GCIndividual Generate(uint seed, uint tsv = 0x10000)
         {
             var rep = seed;
             seed.Advance(2); // dummyPID
-            uint[] IVs = seed.GetIVs();
+            var ivs = GenerateIVs(ref seed);
             var abilityIndex = seed.GetRand(2);
-            uint pid;
-            bool skip = false;
+            var (pid, skipped) = GeneratePID(ref seed, tsv);
+
+            return Species.GetIndividual(Lv, ivs, pid, abilityIndex).SetRepSeed(rep).SetShinySkipped(skipped);
+        }
+
+        public GCIndividual Generate(ref uint seed, uint tsv = 0x10000)
+        {
+            var rep = seed;
+            seed.Advance(2); // dummyPID
+            var ivs = GenerateIVs(ref seed);
+            var abilityIndex = seed.GetRand(2);
+            var (pid, skipped) = GeneratePID(ref seed, tsv);
+
+            return Species.GetIndividual(Lv, ivs, pid, abilityIndex).SetRepSeed(rep).SetShinySkipped(skipped);
+        }
+
+        public void Use(ref uint seed, uint tsv = 0x10000)
+        {
+            seed.Advance(5); // dummyPID
+            GenerateIVs(ref seed);
+            seed.Advance(); // ability
+            GeneratePID(ref seed, tsv);
+        }
+
+        private (uint PID, bool Skipped) GeneratePID(ref uint seed, uint tsv)
+        {
+            var skip = false;
             while (true)
             {
-                pid = (seed.GetRand() << 16) | seed.GetRand() ;
-                if (FixedGender != Gender.Genderless && pid.GetGender(Pokemon.GenderRatio) != FixedGender)
-                    continue;
-                if (FixedNature != Nature.other && (Nature)(pid % 25) != FixedNature)
-                    continue;
-                if (pid.IsShiny(tsv))
-                {
-                    skip |= true;
+                var pid = (seed.GetRand() << 16) | seed.GetRand();
+
+                if (!IsValidPID(pid)) 
                     continue;
 
-                }
-                break;
+                if (skip |= pid.IsShiny(tsv))
+                    continue;
+
+                return (pid, skip);
             }
-
-            return Pokemon.GetIndividual(Lv, IVs, pid, abilityIndex).SetRepSeed(rep).SetShinySkipped(skip);
         }
 
-        public GCSlot(Pokemon.Species p, Gender g = Gender.Genderless, Nature n = Nature.other)
+        protected virtual bool IsValidPID(uint pid) => true;
+
+        protected virtual uint[] GenerateIVs(ref uint seed)
+            => seed.GetIVs();
+
+        public GCSlot(Pokemon.Species species, uint lv)
         {
-            Pokemon = p;
-            Lv = 50;
-            FixedGender = g;
-            FixedNature = n;
-        }
-        public GCSlot(string name, Gender g = Gender.Genderless, Nature n = Nature.other)
-        {
-            Pokemon = PokemonStandardLibrary.Gen3.Pokemon.GetPokemon(name);
-            Lv = 50;
-            FixedGender = g;
-            FixedNature = n;
-        }
-        public GCSlot(string name, uint lv, Gender g = Gender.Genderless, Nature n = Nature.other)
-        {
-            Pokemon = PokemonStandardLibrary.Gen3.Pokemon.GetPokemon(name);
             Lv = lv;
+            Species = species;
+        }
+
+        public GCSlot(string name, uint lv)
+        {
+            Lv = lv;
+            Species = Pokemon.GetPokemon(name);
+        }
+    }
+
+    public class FixedSlot : GCSlot
+    {
+        public Gender FixedGender { get; }
+        public Nature FixedNature { get; }
+
+        protected override bool IsValidPID(uint pid)
+        {
+            if (FixedGender != Gender.Genderless && pid.GetGender(Species.GenderRatio) != FixedGender)
+                return false;
+
+            if (FixedNature != Nature.other && (Nature)(pid % 25) != FixedNature)
+                return false;
+
+            return true;
+        }
+
+        public FixedSlot(string name, Gender g, Nature n) : base(name, 50)
+        {
             FixedGender = g;
             FixedNature = n;
         }
     }
 
-    class ExtraGCSlot : GCSlot
+    public class GenderFixedSlot : GCSlot
     {
-        public override GCIndividual Generate(ref uint seed, uint tsv = 0x10000)
+        public Gender FixedGender { get; }
+
+        protected override bool IsValidPID(uint pid)
+            => FixedGender == Gender.Genderless || pid.GetGender(Species.GenderRatio) == FixedGender;
+
+        public GenderFixedSlot(Pokemon.Species p, Gender g) : base(p, 50)
         {
-            var rep = seed;
-            seed.Advance(2); // dummyPID
-            seed.GetIVs(); // 生成するだけ。0固定なので。
-            var abilityIndex = seed.GetRand(2);
-            uint pid;
-            bool skip = false;
-            while (true)
-            {
-                pid = (seed.GetRand() << 16) | seed.GetRand();
-                if (FixedGender != Gender.Genderless && pid.GetGender(Pokemon.GenderRatio) != FixedGender)
-                    continue;
-                if (FixedNature != Nature.other && (Nature)(pid % 25) != FixedNature)
-                    continue;
-                if (pid.IsShiny(tsv))
-                {
-                    skip |= true;
-                    continue;
+            FixedGender = g;
+        }
+        public GenderFixedSlot(string name, uint lv, Gender g) : base(name, lv)
+        {
+            FixedGender = g;
+        }
+    }
 
-                }
-                break;
-            }
+    /// <summary>
+    /// 個体値が0固定の個体
+    /// </summary>
+    public class ExtraGCSlot : GCSlot
+    {
+        protected override uint[] GenerateIVs(ref uint seed)
+        {
+            // 生成処理自体は走る
+            seed.Advance(2);
 
-            return Pokemon.GetIndividual(Lv, new uint[6], pid, abilityIndex).SetRepSeed(rep).SetShinySkipped(skip);
+            return new uint[6];
         }
 
         public ExtraGCSlot(string name, uint lv) : base(name, lv) { }

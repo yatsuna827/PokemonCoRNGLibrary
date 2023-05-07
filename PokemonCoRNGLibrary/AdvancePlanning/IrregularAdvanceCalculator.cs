@@ -34,7 +34,7 @@ namespace PokemonCoRNGLibrary
             {
                 foreach (var res in seed.EnumerateSeed(new OpenSnatchList()).WithIndex()
                     .Take(maxSnatchList)
-                    .Where(_ => _.element == targetSeed && _.index <= maxSnatchList).Select(_ => ((frame, seed), _.index)))
+                    .Where(_ => _.Element == targetSeed && _.Index <= maxSnatchList).Select(_ => ((frame, seed), _.Index)))
                     yield return res;
             }
         }
@@ -48,7 +48,7 @@ namespace PokemonCoRNGLibrary
                 .Where(_ => minInterval <= _.interval))
                 foreach (var res in seed.EnumerateSeed(new CipherLabB2F()).WithIndex()
                     .Skip(minFrame).Take(maxFrame - minFrame + 1)
-                    .Where(_ => _.element == targetSeed).Select(_ => ((frame, seed), (_.index, _.element))))
+                    .Where(_ => _.Element == targetSeed).Select(_ => ((frame, seed), (_.Index, _.Element))))
                     yield return res;
         }
         [Obsolete]
@@ -60,7 +60,7 @@ namespace PokemonCoRNGLibrary
                 .Where(_ => minInterval <= _.interval)) 
                     foreach (var res in seed.EnumerateSeed(new CipherLabB3F()).WithIndex()
                         .Skip(minFrame).Take(maxFrame - minFrame + 1)
-                        .Where(_ => _.element == targetSeed).Select(_ => ((frame, seed), (_.index, _.element))))
+                        .Where(_ => _.Element == targetSeed).Select(_ => ((frame, seed), (_.Index, _.Element))))
                             yield return res;
         }
         [Obsolete]
@@ -72,7 +72,7 @@ namespace PokemonCoRNGLibrary
                 .Where(_ => minInterval <= _.interval))
                 foreach (var res in seed.EnumerateSeed(new OutskirtStand()).WithIndex()
                     .Skip(minFrame).Take(maxFrame - minFrame + 1)
-                    .Where(_ => _.element == targetSeed).Select(_ => ((frame, seed), (_.index, _.element))))
+                    .Where(_ => _.Element == targetSeed).Select(_ => ((frame, seed), (_.Index, _.Element))))
                     yield return res;
         }
         [Obsolete]
@@ -84,7 +84,7 @@ namespace PokemonCoRNGLibrary
                 .Where(_ => minInterval <= _.interval))
                 foreach (var res in seed.EnumerateSeed(new PyriteCave()).WithIndex()
                     .Skip(minFrame).Take(maxFrame - minFrame + 1)
-                    .Where(_ => _.element == targetSeed).Select(_ => ((frame, seed), (_.index, _.element))))
+                    .Where(_ => _.Element == targetSeed).Select(_ => ((frame, seed), (_.Index, _.Element))))
                     yield return res;
         }
     

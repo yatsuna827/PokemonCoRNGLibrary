@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PokemonCoRNGLibrary
 {
-    static class MyLinq
+    static class BinarySearch
     {
         // 参考: https://qiita.com/hamko/items/794a92c456164dcc04ad
         // item < list[i]となる最小のiを返す.

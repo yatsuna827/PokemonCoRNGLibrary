@@ -7,39 +7,39 @@ namespace PokemonCoRNGLibrary.AdvanceSource
 {
     public class EnterBattleNow : ISeedEnumeratorHandler
     {
-        private static readonly GCSlot[][] dummyTeam = new GCSlot[][]
+        private static readonly GenderFixedSlot[][] dummyTeam = new GenderFixedSlot[][]
         {
             new[] {
-                new GCSlot(Pokemon.GetPokemon("Dummy", "FemaleOnly"), Gender.Female),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M3F1"), Gender.Male),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M7F1"), Gender.Female),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M7F1"), Gender.Male),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M7F1"), Gender.Female),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M7F1"), Gender.Male),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "FemaleOnly"), Gender.Female),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M3F1"), Gender.Male),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M7F1"), Gender.Female),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M7F1"), Gender.Male),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M7F1"), Gender.Female),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M7F1"), Gender.Male),
             },
             new[] {
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M7F1"), Gender.Female),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Male),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M7F1"), Gender.Female),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Male),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Female),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Male),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M7F1"), Gender.Female),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Male),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M7F1"), Gender.Female),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Male),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Female),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Male),
             },
             new[] {
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M1F3"), Gender.Female),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M7F1"), Gender.Male),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Female),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Male),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Female),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Male),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M1F3"), Gender.Female),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M7F1"), Gender.Male),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Female),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Male),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Female),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Male),
             },
             new[] {
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Female),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Male),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "FemaleOnly"), Gender.Female),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Male),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Female),
-                new GCSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Male),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Female),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Male),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "FemaleOnly"), Gender.Female),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Male),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Female),
+                new GenderFixedSlot(Pokemon.GetPokemon("Dummy", "M1F1"), Gender.Male),
             }
         };
 
