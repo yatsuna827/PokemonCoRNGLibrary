@@ -5,6 +5,7 @@ using PokemonPRNG.LCG32.GCLCG;
 using PokemonCoRNGLibrary.AdvanceSource;
 using System.Collections;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace PokemonCoRNGLibrary
 {
@@ -23,7 +24,7 @@ namespace PokemonCoRNGLibrary
 
     public static class SeedEnumeratorExtension
     {
-        public static IEnumerable<uint> EnumerateSeed(this uint seed, ISeedEnumeratorHandler handler)
+        private static IEnumerable<uint> EnumerateSeedNotNull(this uint seed, ISeedEnumeratorHandler handler)
         {
             seed = handler.Initialize(seed);
             while (true)
@@ -32,6 +33,9 @@ namespace PokemonCoRNGLibrary
                 seed = handler.Advance(seed);
             }
         }
+        public static IEnumerable<uint> EnumerateSeed(this uint seed, ISeedEnumeratorHandler handler)
+            => handler is null ? seed.EnumerateSeed() : seed.EnumerateSeedNotNull(handler);
+
         public static IEnumerable<(uint Seed, int Frame, int Interval)> EnumerateActionSequence(this uint seed, IActionSequenceEnumeratorHandler handler)
         {
             var lastBlinkedFrame = 0;

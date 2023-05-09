@@ -1,9 +1,5 @@
 ﻿using PokemonCoRNGLibrary.ProvidedData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PokemonPRNG.LCG32;
 
 namespace Tests
 {
@@ -237,6 +233,16 @@ namespace Tests
             var actual = ProvidedCoDarkPokemonData.Get("ヤミカラス").GetGenerator().Generate(0xDEADFACE);
             Assert.Equal(new uint[] { 0, 12, 7, 11, 24, 28 }, actual.Content.IVs);
             Assert.Equal(0x1DAFA6DDu, actual.Content.PID);
+        }
+        [Fact]
+        public void TestGenerate()
+        {
+            var seed = 0x1C71CE9Bu;
+            var poke = ProvidedCoDarkPokemonData.Get("マクノシタ").GetGenerator();
+
+            var actual = seed.Generate(poke);
+            Assert.Equal(new uint[] { 2, 19, 16, 1, 24, 29 }, actual.Content.IVs);
+            Assert.Equal(0xDFAD0343u, actual.Content.PID);
         }
     }
 }

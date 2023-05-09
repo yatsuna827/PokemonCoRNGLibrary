@@ -3,6 +3,7 @@ using PokemonPRNG.LCG32.GCLCG;
 using PokemonStandardLibrary;
 using PokemonStandardLibrary.CommonExtension;
 using PokemonStandardLibrary.Gen3;
+using System;
 
 namespace PokemonCoRNGLibrary
 {
@@ -15,7 +16,7 @@ namespace PokemonCoRNGLibrary
         {
             var rep = seed;
             seed.Advance(2); // dummyPID
-            var ivs = GenerateIVs(ref seed);
+            var ivs = seed.GetIVs();
             var abilityIndex = seed.GetRand(2);
             var (pid, skipped) = GeneratePID(ref seed, tsv);
 
@@ -26,7 +27,7 @@ namespace PokemonCoRNGLibrary
         {
             var rep = seed;
             seed.Advance(2); // dummyPID
-            var ivs = GenerateIVs(ref seed);
+            var ivs = seed.GetIVs();
             var abilityIndex = seed.GetRand(2);
             var (pid, skipped) = GeneratePID(ref seed, tsv);
 
@@ -51,8 +52,11 @@ namespace PokemonCoRNGLibrary
                 if (!IsValidPID(pid)) 
                     continue;
 
-                if (skip |= pid.IsShiny(tsv))
+                if (pid.IsShiny(tsv))
+                {
+                    skip = true;
                     continue;
+                }
 
                 return (pid, skip);
             }

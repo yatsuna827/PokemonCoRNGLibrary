@@ -16,7 +16,7 @@ namespace PokemonCoRNGLibrary
             var head = seed;
             var dummyTSV = seed.GetRand() ^ seed.GetRand();
             foreach (var pokemon in _preGeneratePokemons)
-                seed.Used(pokemon, dummyTSV);
+                pokemon.Use(ref seed, dummyTSV);
 
             var res = _slot.Generate(ref seed, dummyTSV);
 
