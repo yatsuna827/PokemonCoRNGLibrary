@@ -35,7 +35,7 @@ namespace PokemonCoRNGLibrary
 
         public void Use(ref uint seed, uint tsv = 0x10000)
         {
-            seed.Advance(5); // dummyPID
+            seed.Advance(2); // dummyPID
             GenerateIVs(ref seed);
             seed.Advance(); // ability
             GeneratePID(ref seed, tsv);

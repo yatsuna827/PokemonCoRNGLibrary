@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PokemonCoRNGLibrary.ProvidedData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,8 @@ namespace Tests
         [Fact]
         public void TestCalcBack()
         {
-            var actual = CoDarkPokemon.GetDarkPokemon("ヘラクロス").CalcBack(26, 30, 10, 11, 26, 7).Select(_ => _.seed).ToArray();
+            var actual = ProvidedCoDarkPokemonData.Get("ヘラクロス").GetGenerator()
+                .CalcBack(26, 30, 10, 11, 26, 7).Select(_ => _.Seed).ToArray();
             var expected = new uint[]
             {
                 0xBEEF01E6u,
@@ -232,7 +234,7 @@ namespace Tests
         [Fact]
         public void TestGenerateWithPreGenerate()
         {
-            var actual = CoDarkPokemon.GetDarkPokemon("ヤミカラス").Generate(0xDEADFACE);
+            var actual = ProvidedCoDarkPokemonData.Get("ヤミカラス").GetGenerator().Generate(0xDEADFACE);
             Assert.Equal(new uint[] { 0, 12, 7, 11, 24, 28 }, actual.Content.IVs);
             Assert.Equal(0x1DAFA6DDu, actual.Content.PID);
         }

@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PokemonPRNG" Version="3.6.1" />
+    <PackageReference Include="PokemonPRNG" Version="3.6.2" />
     <PackageReference Include="PokemonStandardLibrary" Version="1.4.0" />
     <PackageReference Include="PokemonStandardLibrary.Gen3" Version="1.2.0" />
   </ItemGroup>
