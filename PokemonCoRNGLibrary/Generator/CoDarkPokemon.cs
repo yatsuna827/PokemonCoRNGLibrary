@@ -152,17 +152,17 @@ namespace PokemonCoRNGLibrary
                 new CoDarkPokemon("ツボツボ", 45),
                 new CoDarkPokemon("トゲチック", 20),
 
-                new CoDarkPokemon(new ExtraGCSlot("トゲピー", 20), new FixedSlot[] {
+                new CoDarkPokemon(new ExtraGCSlot("トゲピー", 20, Gender.Female, Nature.Sassy), new FixedSlot[] {
                     new FixedSlot("ヤミラミ", Gender.Male, Nature.Careful),
                     new FixedSlot("ベトベター", Gender.Male, Nature.Impish),
                     new FixedSlot("ゴクリン", Gender.Male, Nature.Quirky)
                 }),
-                new CoDarkPokemon(new ExtraGCSlot("メリープ", 37), new FixedSlot[] {
+                new CoDarkPokemon(new ExtraGCSlot("メリープ", 37, Gender.Female, Nature.Mild), new FixedSlot[] {
                     new FixedSlot("エネコ", Gender.Female, Nature.Naughty),
                     new FixedSlot("ハリーセン", Gender.Female, Nature.Timid),
                     new FixedSlot("ヨマワル", Gender.Female, Nature.Serious)
                 }),
-                new CoDarkPokemon(new ExtraGCSlot("ハッサム", 50), new FixedSlot[] {
+                new CoDarkPokemon(new ExtraGCSlot("ハッサム", 50, Gender.Male, Nature.Hasty), new FixedSlot[] {
                     new FixedSlot("ヤミカラス", Gender.Female, Nature.Jolly),
                     new FixedSlot("ネンドール", Gender.Genderless, Nature.Brave),
                     new FixedSlot("ハガネール", Gender.Male, Nature.Adamant)

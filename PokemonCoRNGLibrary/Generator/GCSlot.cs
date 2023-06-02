@@ -16,7 +16,7 @@ namespace PokemonCoRNGLibrary
         {
             var rep = seed;
             seed.Advance(2); // dummyPID
-            var ivs = seed.GetIVs();
+            var ivs = GenerateIVs(ref seed);
             var abilityIndex = seed.GetRand(2);
             var (pid, skipped) = GeneratePID(ref seed, tsv);
 
@@ -27,7 +27,7 @@ namespace PokemonCoRNGLibrary
         {
             var rep = seed;
             seed.Advance(2); // dummyPID
-            var ivs = seed.GetIVs();
+            var ivs = GenerateIVs(ref seed);
             var abilityIndex = seed.GetRand(2);
             var (pid, skipped) = GeneratePID(ref seed, tsv);
 
@@ -125,6 +125,20 @@ namespace PokemonCoRNGLibrary
     /// </summary>
     public class ExtraGCSlot : GCSlot
     {
+        public Gender FixedGender { get; }
+        public Nature FixedNature { get; }
+
+        protected override bool IsValidPID(uint pid)
+        {
+            if (FixedGender != Gender.Genderless && pid.GetGender(Species.GenderRatio) != FixedGender)
+                return false;
+
+            if (FixedNature != Nature.other && (Nature)(pid % 25) != FixedNature)
+                return false;
+
+            return true;
+        }
+
         protected override uint[] GenerateIVs(ref uint seed)
         {
             // 生成処理自体は走る
@@ -133,6 +147,7 @@ namespace PokemonCoRNGLibrary
             return new uint[6];
         }
 
-        public ExtraGCSlot(string name, uint lv) : base(name, lv) { }
+        public ExtraGCSlot(string name, uint lv, Gender gender, Nature nature) : base(name, lv) 
+            => (FixedGender, FixedNature) = (gender, nature);
     }
 }

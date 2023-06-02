@@ -113,18 +113,17 @@ namespace PokemonCoRNGLibrary.ProvidedData
                 }),
                 new ProvidedCoDarkPokemonData("ツボツボ", 45),
                 new ProvidedCoDarkPokemonData("トゲチック", 20),
-
-                new ProvidedCoDarkPokemonData(new ExtraGCSlot("トゲピー", 20), new FixedSlot[] {
+                new ProvidedCoDarkPokemonData(new ExtraGCSlot("トゲピー", 20, Gender.Female, Nature.Sassy), new FixedSlot[] {
                     new FixedSlot("ヤミラミ", Gender.Male, Nature.Careful),
                     new FixedSlot("ベトベター", Gender.Male, Nature.Impish),
                     new FixedSlot("ゴクリン", Gender.Male, Nature.Quirky)
                 }),
-                new ProvidedCoDarkPokemonData(new ExtraGCSlot("メリープ", 37), new FixedSlot[] {
+                new ProvidedCoDarkPokemonData(new ExtraGCSlot("メリープ", 37, Gender.Female, Nature.Mild), new FixedSlot[] {
                     new FixedSlot("エネコ", Gender.Female, Nature.Naughty),
                     new FixedSlot("ハリーセン", Gender.Female, Nature.Timid),
                     new FixedSlot("ヨマワル", Gender.Female, Nature.Serious)
                 }),
-                new ProvidedCoDarkPokemonData(new ExtraGCSlot("ハッサム", 50), new FixedSlot[] {
+                new ProvidedCoDarkPokemonData(new ExtraGCSlot("ハッサム", 50, Gender.Male, Nature.Hasty), new FixedSlot[] {
                     new FixedSlot("ヤミカラス", Gender.Female, Nature.Jolly),
                     new FixedSlot("ネンドール", Gender.Genderless, Nature.Brave),
                     new FixedSlot("ハガネール", Gender.Male, Nature.Adamant)

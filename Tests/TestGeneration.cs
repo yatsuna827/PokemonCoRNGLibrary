@@ -1,5 +1,6 @@
 ﻿using PokemonCoRNGLibrary.ProvidedData;
 using PokemonPRNG.LCG32;
+using PokemonStandardLibrary;
 
 namespace Tests
 {
@@ -227,6 +228,7 @@ namespace Tests
 
             Assert.Equal(expected, actual);
         }
+
         [Fact]
         public void TestGenerateWithPreGenerate()
         {
@@ -234,6 +236,7 @@ namespace Tests
             Assert.Equal(new uint[] { 0, 12, 7, 11, 24, 28 }, actual.Content.IVs);
             Assert.Equal(0x1DAFA6DDu, actual.Content.PID);
         }
+
         [Fact]
         public void TestGenerate()
         {
@@ -243,6 +246,17 @@ namespace Tests
             var actual = seed.Generate(poke);
             Assert.Equal(new uint[] { 2, 19, 16, 1, 24, 29 }, actual.Content.IVs);
             Assert.Equal(0xDFAD0343u, actual.Content.PID);
+        }
+
+        [Fact]
+        public void TestGenerateCardE()
+        {
+            var seed = 0xCAFE0123u;
+            var poke = ProvidedCoDarkPokemonData.Get("ハッサム").GetGenerator();
+
+            var actual = seed.Generate(poke);
+            Assert.Equal(new uint[] { 0, 0, 0, 0, 0, 0 }, actual.Content.IVs);
+            Assert.Equal(Nature.Hasty, actual.Content.Nature);
         }
     }
 }
