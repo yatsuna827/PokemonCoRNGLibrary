@@ -82,7 +82,11 @@ namespace PokemonCoRNGLibrary
             }
         }
 
+        // 再帰的にPSV条件をチェックする
         internal protected virtual bool CheckPSV(uint tsv) => (psvCondition ^ tsv) >= 8 && prevCell.CheckPSV(tsv);
+
+        // 生成開始seedのチェック時に、TSVがTSV条件がある場合に一致しているか、および
+        // 事前生成ポケモンの色回避に引っかからないかをチェックする
         internal bool CheckTSVGeneration()
         {
             var tsv = (seed >> 16) ^ (seed.PrevSeed() >> 16);
