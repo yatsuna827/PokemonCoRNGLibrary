@@ -54,7 +54,7 @@ namespace PokemonCoRNGLibrary
         public DarkPokemonGenerator(GCSlot slot, FixedSlot[] preGeneratePokemons = null)
         {
             _slot = slot;
-            _preGeneratePokemons = preGeneratePokemons?.ToArray() ?? new FixedSlot[0];
+            _preGeneratePokemons = preGeneratePokemons?.ToArray() ?? Array.Empty<FixedSlot>();
         }
     }
 }

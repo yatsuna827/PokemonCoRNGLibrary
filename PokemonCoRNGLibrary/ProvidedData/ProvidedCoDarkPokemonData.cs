@@ -11,13 +11,16 @@ namespace PokemonCoRNGLibrary.ProvidedData
         public GCSlot Slot { get; }
         public IReadOnlyList<FixedSlot> PreGeneratePokemons { get; }
 
-        public DarkPokemonGenerator GetGenerator(FixedSlot[] preGeneratePokemonsOverride = null)
-            => new DarkPokemonGenerator(Slot, preGeneratePokemonsOverride ?? PreGeneratePokemons.ToArray());
+        public ProvidedCoDarkPokemonData OverridePreGeneratePokemons(FixedSlot[] preGeneratePokemonsOverride)
+            => new ProvidedCoDarkPokemonData(this.Slot, preGeneratePokemonsOverride ?? Array.Empty<FixedSlot>());
+
+        public DarkPokemonGenerator GetGenerator()
+            => new DarkPokemonGenerator(Slot, PreGeneratePokemons.ToArray());
 
         private ProvidedCoDarkPokemonData(string name, uint lv)
         {
             Slot = new GCSlot(name, lv);
-            PreGeneratePokemons = new FixedSlot[0];
+            PreGeneratePokemons = Array.Empty<FixedSlot>();
         }
         private ProvidedCoDarkPokemonData(string name, uint lv, FixedSlot[] preGenerate)
         {
