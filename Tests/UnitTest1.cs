@@ -74,7 +74,9 @@ namespace Tests
         {
             var seed = 0xDEADBEEFu;
 
+#pragma warning disable CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var arr1 = seed.EnumerateSeedAtNamingScreen().Take(100).ToArray();
+#pragma warning restore CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var arr2 = seed.EnumerateSeed(new NamingScreen()).Take(100).ToArray();
 
             Assert.Equal(arr1, arr2);
@@ -85,7 +87,9 @@ namespace Tests
         {
             var seed = 0xDEADBEEFu;
 
+#pragma warning disable CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var arr1 = seed.EnumerateSeedAtCipherLabB1F().Take(100).ToArray();
+#pragma warning restore CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var arr2 = seed.EnumerateSeed(new CipherLabB2F()).Take(100).ToArray();
 
             Assert.Equal(arr1, arr2);
@@ -96,7 +100,9 @@ namespace Tests
         {
             var seed = 0xDEADBEEFu;
 
+#pragma warning disable CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var arr1 = seed.EnumerateSeedAtCipherLabB2F().Take(100).ToArray();
+#pragma warning restore CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var arr2 = seed.EnumerateSeed(new CipherLabB3F()).Take(100).ToArray();
 
             Assert.Equal(arr1, arr2);
@@ -107,7 +113,9 @@ namespace Tests
         {
             var seed = 0xDEADBEEFu;
 
+#pragma warning disable CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var arr1 = seed.EnumerateSeedAtOutskirtStand().Take(100).ToArray();
+#pragma warning restore CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var arr2 = seed.EnumerateSeed(new OutskirtStand()).Take(100).ToArray();
 
             Assert.Equal(arr1, arr2);
@@ -118,7 +126,9 @@ namespace Tests
         {
             var seed = 0xDEADBEEFu;
 
+#pragma warning disable CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var arr1 = seed.EnumerateSeedAtPyriteCave().Take(100).ToArray();
+#pragma warning restore CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var arr2 = seed.EnumerateSeed(new PyriteCave()).Take(100).ToArray();
 
             Assert.Equal(arr1, arr2);
@@ -129,7 +139,9 @@ namespace Tests
         {
             var seed = 0xDEADBEEFu;
 
+#pragma warning disable CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var arr1 = seed.EnumerateSeedInBattle(4, false).Take(100).ToArray();
+#pragma warning restore CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var arr2 = seed.EnumerateSeed(new BlinkObjectEnumeratorHanlder(
                 new BlinkObject(10, 10), 
                 new BlinkObject(4, 10)
@@ -155,7 +167,9 @@ namespace Tests
             var seed = 0xE6C6E208u;
             var target = 0xB27AE396u;
 
+#pragma warning disable CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var a = IrregularAdvanceCalculator.CalcBlinkAndVibravaFrame(seed, target, 50, 1800, 20000, 300, 700);
+#pragma warning restore CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var b = new BlinkAdvancePlanner(new BlinkObject(4), new CipherLabB2F())
                 .CalculatePlanning(seed, target, 50, 1800, 20000, 300, 700);
 
@@ -168,7 +182,9 @@ namespace Tests
             var seed = 0xE6C6E208u;
             var target = 0xB27AE396u;
 
+#pragma warning disable CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var a = IrregularAdvanceCalculator.CalcBlinkAndBubbleFrame(seed, target, 94, 1800, 20000, 300, 700);
+#pragma warning restore CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var b = new BlinkAdvancePlanner(new BlinkObject(4), new CipherLabB3F())
                 .CalculatePlanning(seed, target, 94, 1800, 20000, 300, 700);
 
@@ -181,7 +197,9 @@ namespace Tests
             var seed = 0xE6C6E208u;
             var target = 0xB27AE396u;
 
+#pragma warning disable CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var a = IrregularAdvanceCalculator.CalcBlinkAndSmokeFrame(seed, target, 94, 1800, 20000, 300, 700);
+#pragma warning restore CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var b = new BlinkAdvancePlanner(new BlinkObject(4), new PyriteCave())
                 .CalculatePlanning(seed, target, 94, 1800, 20000, 300, 700);
 
@@ -194,7 +212,9 @@ namespace Tests
             var seed = 0xE6C6E208u;
             var target = 0xB27AE396u;
 
+#pragma warning disable CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var a = IrregularAdvanceCalculator.CalcBlinkAndStandFrame(seed, target, 94, 1800, 20000, 300, 700);
+#pragma warning restore CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
             var b = new BlinkAdvancePlanner(new BlinkObject(4), new OutskirtStand())
                 .CalculatePlanning(seed, target, 94, 1800, 20000, 300, 700);
 
