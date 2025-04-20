@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using PokemonPRNG.LCG32.GCLCG;
-using System.Reflection;
 
 namespace PokemonCoRNGLibrary.AdvanceSource
 {
