@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+
 using PokemonPRNG.LCG32.GCLCG;
 using PokemonCoRNGLibrary.AdvanceSource;
-using System.Collections;
-using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace PokemonCoRNGLibrary
 {
@@ -15,6 +12,33 @@ namespace PokemonCoRNGLibrary
         uint SelectCurrent(uint seed);
         uint Advance(uint seed);
     }
+    public interface ISeedEnumeratorHandlerWithSelector<T>
+    {
+        uint Initialize(uint seed);
+        uint SelectCurrent(uint seed, Func<uint, T, uint> selector);
+        uint Advance(uint seed);
+    }
+    class AppliedSeedEnumeratorHandler<T> : ISeedEnumeratorHandler
+    {
+        private Func<uint, T, uint> _selector;
+        private ISeedEnumeratorHandlerWithSelector<T> _handler;
+
+        public uint Initialize(uint seed) => _handler.Initialize(seed);
+        public uint SelectCurrent(uint seed) => _handler.SelectCurrent(seed, _selector);
+        public uint Advance(uint seed) => _handler.Advance(seed);
+
+        public AppliedSeedEnumeratorHandler(ISeedEnumeratorHandlerWithSelector<T> handler, Func<uint, T, uint> selector)
+        {
+            _handler = handler;
+            _selector = selector;
+        }
+    }
+    public static class ISeedEnumeratorHandlerExtension
+    {
+        public static ISeedEnumeratorHandler Apply<T>(this ISeedEnumeratorHandlerWithSelector<T> handler, Func<uint, T, uint> selector)
+            => new AppliedSeedEnumeratorHandler<T>(handler, selector);
+    }
+
     public interface IActionSequenceEnumeratorHandler
     {
         uint Initialize(uint seed);
@@ -161,35 +185,6 @@ namespace PokemonCoRNGLibrary
                 if (seed.GetRand() < 0x199A) { seed.Advance(4); index += 4; }
             }
         }
-
-        /// <summary>
-        /// パイラの洞窟の不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
-        /// consider4Framesは戦闘突入時の4消費を考慮するかどうかです. この4消費の後に不定消費が1フレームだけ入ります.
-        /// </summary>
-        /// <param name="seed"></param>
-        /// <returns></returns>
-        [Obsolete] public static IEnumerable<uint> EnumerateSeedAtPyriteCave(this uint seed, bool consider4Frames = true) => new PyriteCaveEnumerator(seed, consider4Frames).EnumerateSeed();
-
-        /// <summary>
-        /// ダークポケモン研究所B1Fの不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
-        /// </summary>
-        /// <param name="seed"></param>
-        /// <returns></returns>
-        [Obsolete] public static IEnumerable<uint> EnumerateSeedAtCipherLabB1F(this uint seed) => new VibravaEnumerator(seed).EnumerateSeed();
-
-        /// <summary>
-        /// ダークポケモン研究所B2Fの不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
-        /// </summary>
-        /// <param name="seed"></param>
-        /// <returns></returns>
-        [Obsolete] public static IEnumerable<uint> EnumerateSeedAtCipherLabB2F(this uint seed) => new CipherLabEnumerator(seed).EnumerateSeed();
-
-        /// <summary>
-        /// 町外れのスタンド屋外の不定消費をシミュレートし, 無限にseedを返し続けます. SkipやTakeと組み合わせてください.
-        /// </summary>
-        /// <param name="seed"></param>
-        /// <returns></returns>
-        [Obsolete] public static IEnumerable<uint> EnumerateSeedAtOutskirtStand(this uint seed) => new OutskirtStandEnumerator(seed).EnumerateSeed();
 
     }
 }

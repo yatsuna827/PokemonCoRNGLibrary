@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
+
 using PokemonPRNG.LCG32.GCLCG;
 
 namespace PokemonCoRNGLibrary.AdvanceSource
@@ -84,39 +84,6 @@ namespace PokemonCoRNGLibrary.AdvanceSource
                 newChild.child = this.child;
                 this.child = newChild;
             }
-        }
-    }
-
-    /// <summary>
-    /// seedの列挙をサポートするクラス.
-    /// </summary>
-    class VibravaEnumerator : IEnumerator<uint>
-    {
-        public uint Current => seed;
-
-        object IEnumerator.Current => Current;
-
-        public void Dispose() => counter = null;
-
-        public bool MoveNext()
-        {
-            counter.CountUp(ref seed);
-            return true;
-        }
-
-        public void Reset()
-        {
-            seed = initialSeed;
-            counter = new CipherLabB2FCounter(ref seed);
-        }
-
-        private readonly uint initialSeed;
-        private uint seed;
-        private CipherLabB2FCounter counter;
-        public VibravaEnumerator(uint seed)
-        {
-            initialSeed = seed;
-            Reset();
         }
     }
 

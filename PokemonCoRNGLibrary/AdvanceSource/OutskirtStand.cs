@@ -1,6 +1,7 @@
-﻿using System.Linq;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using PokemonPRNG.LCG32.GCLCG;
 
 namespace PokemonCoRNGLibrary.AdvanceSource
@@ -8,7 +9,7 @@ namespace PokemonCoRNGLibrary.AdvanceSource
     /// <summary>
     /// 町外れのスタンド 屋外の不定消費をエミュレートするクラス. 不定消費の用途は知らない.
     /// </summary>
-    class OutskirtStandCounter
+    class OutskirtStandCounter : ISourceCounter
     {
         private float value;
         public OutskirtStandCounter(ref uint seed)
@@ -24,43 +25,18 @@ namespace PokemonCoRNGLibrary.AdvanceSource
                 seed.Advance();
             }
         }
-    }
-
-    /// <summary>
-    /// seedの列挙をサポートするクラス.
-    /// </summary>
-    class OutskirtStandEnumerator : IEnumerator<uint>
-    {
-        public uint Current => seed.NextSeed(4);
-
-        object IEnumerator.Current => Current;
-
-        public void Dispose() => counter = null;
-
-        public bool MoveNext()
+        public uint SimulateNextFrame(uint seed)
         {
-            counter.CountUp(ref seed);
-            return true;
-        }
-
-        public void Reset()
-        {
-            this.seed = initialSeed;
-            counter = new OutskirtStandCounter(ref seed);
-        }
-
-        private readonly uint initialSeed;
-        private uint seed;
-        private OutskirtStandCounter counter;
-        public OutskirtStandEnumerator(uint seed)
-        {
-            initialSeed = seed;
-            Reset();
+            var next = value + seed.GetRand_f() * 0.8f;
+            if (next >= 1.0f)
+            {
+                seed.Advance();
+            }
+            return seed;
         }
     }
 
-
-    public class OutskirtStand : ISeedEnumeratorHandler
+    public class OutskirtStand : ISeedEnumeratorHandler, ISeedEnumeratorHandlerWithSelector<ISourceCounter>
     {
         private OutskirtStandCounter _counter;
 
@@ -70,7 +46,8 @@ namespace PokemonCoRNGLibrary.AdvanceSource
             return seed;
         }
 
-        public uint SelectCurrent(uint seed) => seed.NextSeed(4);
+        public uint SelectCurrent(uint seed) => _counter.SimulateNextFrame(seed.NextSeed(4));
+        public uint SelectCurrent(uint seed, Func<uint, ISourceCounter, uint> selector) => selector(seed, _counter);
 
         public uint Advance(uint seed)
         {

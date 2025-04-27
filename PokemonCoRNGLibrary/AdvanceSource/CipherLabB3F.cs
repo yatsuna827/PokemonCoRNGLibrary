@@ -1,6 +1,7 @@
-﻿using System.Linq;
-using System.Collections;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
+
 using PokemonPRNG.LCG32.GCLCG;
 
 namespace PokemonCoRNGLibrary.AdvanceSource
@@ -28,8 +29,7 @@ namespace PokemonCoRNGLibrary.AdvanceSource
 
             foreach (var c in mainCounters) c.CountUp(ref seed);
         }
-
-
+        
         class MainCounter
         {
             private float value;
@@ -112,39 +112,6 @@ namespace PokemonCoRNGLibrary.AdvanceSource
         }
     }
     
-    /// <summary>
-    /// seedの列挙をサポートするクラス.
-    /// </summary>
-    class CipherLabEnumerator : IEnumerator<uint>
-    {
-        public uint Current => seed;
-
-        object IEnumerator.Current => Current;
-
-        public void Dispose() => counter = null;
-
-        public bool MoveNext()
-        {
-            counter.CountUp(ref seed);
-            return true;
-        }
-
-        public void Reset()
-        {
-            seed = initialSeed;
-            counter = new CipherLabB3FCounter();
-        }
-
-        private readonly uint initialSeed;
-        private uint seed;
-        private CipherLabB3FCounter counter;
-        public CipherLabEnumerator(uint seed)
-        {
-            initialSeed = seed;
-            Reset();
-        }
-    }
-
     public class CipherLabB3F : ISeedEnumeratorHandler
     {
         private CipherLabB3FCounter _counter;

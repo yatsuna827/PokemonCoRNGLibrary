@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
+
 using PokemonPRNG.LCG32.GCLCG;
 
 namespace PokemonCoRNGLibrary.AdvanceSource
@@ -9,7 +9,7 @@ namespace PokemonCoRNGLibrary.AdvanceSource
     /// <summary>
     /// パイラの洞窟にある3台のマシンの煙による不定消費をエミュレートするクラス.
     /// </summary>
-    public class PyriteCaveCounter
+    public class PyriteCaveCounter : ISourceCounter
     {
         private readonly MainCounter[] mainCounters;
         private readonly Queue<CountDownValue> lazyGenerators;
@@ -52,11 +52,9 @@ namespace PokemonCoRNGLibrary.AdvanceSource
             foreach(var counter in mainCounters) 
                 counter.CountUp(ref seed);
         }
-        public uint CalcSeedBeforeEntryingBattle(uint seed)
+        
+        public uint SimulateNextFrame(uint seed)
         {
-            // 戦闘突入時のエフェクトで4消費. 諸悪の根源.
-            seed.Advance(4);
-
             // 遅延で生える処理をシミュレート.
             var lazy = lazyGenerators.Count(_ => _.CountDown().IsZero);
             var newSubCounters = new SubCounter[lazy];
@@ -211,42 +209,7 @@ namespace PokemonCoRNGLibrary.AdvanceSource
         }
     }
 
-    /// <summary>
-    /// seedの列挙をサポートするクラス.
-    /// </summary>
-    class PyriteCaveEnumerator : IEnumerator<uint>
-    {
-        public uint Current => consider4frames ? counter.CalcSeedBeforeEntryingBattle(seed) : seed;
-
-        object IEnumerator.Current => Current;
-
-        public void Dispose() => counter = null;
-
-        public bool MoveNext()
-        {
-            counter.CountUp(ref seed);
-            return true;
-        }
-
-        public void Reset()
-        {
-            seed = initialSeed;
-            counter = new PyriteCaveCounter();
-        }
-
-        private readonly uint initialSeed;
-        private uint seed;
-        private PyriteCaveCounter counter;
-        private readonly bool consider4frames;
-        public PyriteCaveEnumerator(uint seed, bool consider4frames = false)
-        {
-            initialSeed = seed;
-            this.consider4frames = consider4frames;
-            Reset();
-        }
-    }
-
-    public class PyriteCave : ISeedEnumeratorHandler
+    public class PyriteCave : ISeedEnumeratorHandler, ISeedEnumeratorHandlerWithSelector<ISourceCounter>
     {
         private PyriteCaveCounter _counter;
 
@@ -256,7 +219,8 @@ namespace PokemonCoRNGLibrary.AdvanceSource
             return seed;
         }
 
-        public uint SelectCurrent(uint seed) => _counter.CalcSeedBeforeEntryingBattle(seed);
+        public uint SelectCurrent(uint seed) => _counter.SimulateNextFrame(seed.NextSeed(4));
+        public uint SelectCurrent(uint seed, Func<uint, ISourceCounter, uint> selector) => selector(seed, _counter);
 
         public uint Advance(uint seed)
         {

@@ -83,58 +83,6 @@ namespace Tests
         }
 
         [Fact]
-        public void TestCipherLabB1F()
-        {
-            var seed = 0xDEADBEEFu;
-
-#pragma warning disable CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
-            var arr1 = seed.EnumerateSeedAtCipherLabB1F().Take(100).ToArray();
-#pragma warning restore CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
-            var arr2 = seed.EnumerateSeed(new CipherLabB2F()).Take(100).ToArray();
-
-            Assert.Equal(arr1, arr2);
-        }
-
-        [Fact]
-        public void TestCipherLabB2F()
-        {
-            var seed = 0xDEADBEEFu;
-
-#pragma warning disable CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
-            var arr1 = seed.EnumerateSeedAtCipherLabB2F().Take(100).ToArray();
-#pragma warning restore CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
-            var arr2 = seed.EnumerateSeed(new CipherLabB3F()).Take(100).ToArray();
-
-            Assert.Equal(arr1, arr2);
-        }
-
-        [Fact]
-        public void TestOutskirtStand()
-        {
-            var seed = 0xDEADBEEFu;
-
-#pragma warning disable CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
-            var arr1 = seed.EnumerateSeedAtOutskirtStand().Take(100).ToArray();
-#pragma warning restore CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
-            var arr2 = seed.EnumerateSeed(new OutskirtStand()).Take(100).ToArray();
-
-            Assert.Equal(arr1, arr2);
-        }
-
-        [Fact]
-        public void TestPyriteCave()
-        {
-            var seed = 0xDEADBEEFu;
-
-#pragma warning disable CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
-            var arr1 = seed.EnumerateSeedAtPyriteCave().Take(100).ToArray();
-#pragma warning restore CS0612 // Œ^‚Ü‚½‚Íƒƒ“ƒo[‚ª‹ŒŒ^®‚Å‚·
-            var arr2 = seed.EnumerateSeed(new PyriteCave()).Take(100).ToArray();
-
-            Assert.Equal(arr1, arr2);
-        }
-
-        [Fact]
         public void TestBattleBlink()
         {
             var seed = 0xDEADBEEFu;

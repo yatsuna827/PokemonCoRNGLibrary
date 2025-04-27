@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
 using PokemonPRNG.LCG32.GCLCG;
 
@@ -10,7 +7,7 @@ namespace PokemonCoRNGLibrary.AdvanceSource
     /// <summary>
     /// パイラタウンにある3つの噴気孔の煙による不定消費をエミュレートするクラス.
     /// </summary>
-    public class PyriteTownCounter
+    public class PyriteTownCounter : ISourceCounter
     {
         private readonly MainCounter[] mainCounters;
         public PyriteTownCounter()
@@ -28,16 +25,14 @@ namespace PokemonCoRNGLibrary.AdvanceSource
             foreach (var counter in mainCounters)
                 counter.CountUp(ref seed);
         }
-        public uint CalcSeedBeforeEntryingBattle(uint seed)
+        public uint SimulateNextFrame(uint seed)
         {
-            // 戦闘突入時のエフェクトで4消費. 諸悪の根源.
-            seed.Advance(4);
-
             foreach (var counter in mainCounters)
                 counter.SimulateCountUp(ref seed);
 
             return seed;
         }
+        
         class MainCounter
         {
             public float Value { get; protected set; }
@@ -76,42 +71,7 @@ namespace PokemonCoRNGLibrary.AdvanceSource
 
     }
 
-    /// <summary>
-    /// seedの列挙をサポートするクラス.
-    /// </summary>
-    class PyriteTownEnumerator : IEnumerator<uint>
-    {
-        public uint Current => consider4frames ? _counter.CalcSeedBeforeEntryingBattle(seed) : seed;
-
-        object IEnumerator.Current => Current;
-
-        public void Dispose() => _counter = null;
-
-        public bool MoveNext()
-        {
-            _counter.CountUp(ref seed);
-            return true;
-        }
-
-        public void Reset()
-        {
-            seed = initialSeed;
-            _counter = new PyriteTownCounter();
-        }
-
-        private readonly uint initialSeed;
-        private uint seed;
-        private PyriteTownCounter _counter;
-        private readonly bool consider4frames;
-        public PyriteTownEnumerator(uint seed, bool consider4frames = false)
-        {
-            initialSeed = seed;
-            this.consider4frames = consider4frames;
-            Reset();
-        }
-    }
-
-    public class PyriteTown : ISeedEnumeratorHandler
+    public class PyriteTown : ISeedEnumeratorHandler, ISeedEnumeratorHandlerWithSelector<ISourceCounter>
     {
         private PyriteTownCounter _counter;
 
@@ -121,12 +81,51 @@ namespace PokemonCoRNGLibrary.AdvanceSource
             return seed;
         }
 
-        public uint SelectCurrent(uint seed) => _counter.CalcSeedBeforeEntryingBattle(seed);
+        public uint SelectCurrent(uint seed) => _counter.SimulateNextFrame(seed.NextSeed(4));
+        public uint SelectCurrent(uint seed, Func<uint, ISourceCounter, uint> selector) => selector(seed, _counter);
 
         public uint Advance(uint seed)
         {
             _counter.CountUp(ref seed);
+
             return seed;
         }
+    
     }
+
+    public class PyriteTownWithNPC : ISeedEnumeratorHandler, ISeedEnumeratorHandlerWithSelector<ISourceCounter>
+    {
+        private readonly int _framesNpcMove;
+        private int _frames;
+        private PyriteTownCounter _counter;
+
+        public uint Initialize(uint seed)
+        {
+            _frames = 0;
+            _counter = new PyriteTownCounter();
+            return seed;
+        }
+
+        public uint SelectCurrent(uint seed) =>  seed;
+        public uint SelectCurrent(uint seed, Func<uint, ISourceCounter, uint> selector) => selector(seed, _counter);
+
+        public uint Advance(uint seed)
+        {
+            _counter.CountUp(ref seed);
+
+            if (++_frames == _framesNpcMove)
+                seed.Advance(12);
+
+            return seed;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="framesNpcMove">パイラビル/パイラコロシアムから出た場合は49F、それ以外の場合は48Fとされている</param>
+        public PyriteTownWithNPC(int framesNpcMove)
+        {
+            _framesNpcMove = framesNpcMove;
+        }
+    }
+
 }
